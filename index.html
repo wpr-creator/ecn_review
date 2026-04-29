@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +33,6 @@ body {
   cursor: default;
 }
 
-/* ── MONEY RAIN CANVAS ── */
 #money-canvas {
   position: fixed;
   top: 0; left: 0;
@@ -44,7 +42,6 @@ body {
   opacity: 0.18;
 }
 
-/* ── BILL TEXTURE OVERLAY ── */
 body::before {
   content: '';
   position: fixed;
@@ -56,7 +53,6 @@ body::before {
   z-index: 0;
 }
 
-/* ── RADIAL SPOTLIGHT ── */
 body::after {
   content: '';
   position: fixed;
@@ -78,7 +74,6 @@ body::after {
   padding: 0 2rem 6rem;
 }
 
-/* ── HEADER ── */
 header {
   padding-top: 3.5rem;
   text-align: center;
@@ -158,18 +153,19 @@ header {
   margin-bottom: 0;
 }
 
-/* ── DIVIDER BILL ── */
 .bill-divider {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 2.5rem 0 3rem;
 }
+
 .bill-divider .line {
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
+
 .bill-divider .inner {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.7rem;
@@ -180,7 +176,6 @@ header {
   white-space: nowrap;
 }
 
-/* ── SECTION HEADING ── */
 .section-heading {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.7rem;
@@ -193,6 +188,7 @@ header {
   align-items: center;
   gap: 0.75rem;
 }
+
 .section-heading::after {
   content: '';
   flex: 1;
@@ -200,7 +196,6 @@ header {
   background: rgba(201,168,76,0.15);
 }
 
-/* ── UNIT CARDS ── */
 .units-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -237,9 +232,9 @@ header {
   border-color: var(--gold);
   box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.2), inset 0 1px 0 rgba(201,168,76,0.1);
 }
+
 .unit-card:hover::before { opacity: 1; }
 
-/* coming soon */
 .unit-card.soon {
   opacity: 0.45;
   cursor: not-allowed;
@@ -258,6 +253,7 @@ header {
   align-items: center;
   gap: 0.5rem;
 }
+
 .card-num .dot {
   width: 6px; height: 6px;
   border-radius: 50%;
@@ -295,6 +291,7 @@ header {
   gap: 0.35rem;
   margin-bottom: 1.25rem;
 }
+
 .topic-tag {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.65rem;
@@ -320,96 +317,15 @@ header {
   color: var(--gold-bright);
   transition: gap 0.2s;
 }
+
 .unit-card:hover .card-cta { gap: 0.75rem; }
-.card-cta .arrow { font-size: 1rem; transition: transform 0.2s; }
+
+.card-cta .arrow {
+  font-size: 1rem;
+  transition: transform 0.2s;
+}
+
 .unit-card:hover .card-cta .arrow { transform: translateX(4px); }
-
-.soon-badge {
-  position: absolute;
-  top: 1rem; right: 1rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: rgba(201,168,76,0.12);
-  border: 1px solid rgba(201,168,76,0.25);
-  color: rgba(201,168,76,0.6);
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-}
-
-/* corner watermark number */
-.card-watermark {
-  position: absolute;
-  bottom: -0.5rem;
-  right: 1rem;
-  font-family: 'Playfair Display', serif;
-  font-size: 5rem;
-  font-weight: 900;
-  color: rgba(201,168,76,0.05);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ── BOTTOM TICKER ── */
-.ticker-wrap {
-  background: var(--gold);
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 0.55rem 0;
-  border-radius: 8px;
-  margin-top: 1.5rem;
-}
-.ticker-inner {
-  display: inline-block;
-  animation: ticker 30s linear infinite;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.ticker-inner span { margin: 0 2rem; }
-.ticker-inner .bull { color: var(--green-bill); }
-.ticker-inner .sym { opacity: 0.4; }
-@keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ── FOOTER ── */
-footer {
-  text-align: center;
-  margin-top: 4rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(201,168,76,0.3);
-}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.anim { opacity: 0; animation: fadeSlideUp 0.6s ease forwards; }
-.d1 { animation-delay: 0.1s; }
-.d2 { animation-delay: 0.2s; }
-.d3 { animation-delay: 0.3s; }
-.d4 { animation-delay: 0.4s; }
-.d5 { animation-delay: 0.5s; }
-.d6 { animation-delay: 0.6s; }
-.d7 { animation-delay: 0.7s; }
-.d8 { animation-delay: 0.8s; }
-
-@media (max-width: 600px) {
-  .units-grid { grid-template-columns: 1fr; }
-  .main-title { font-size: 2.6rem; }
-}
 
 .game-links {
   display: grid;
@@ -441,6 +357,92 @@ footer {
   transform: translateY(-2px);
 }
 
+.soon-badge {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  color: rgba(201,168,76,0.6);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.card-watermark {
+  position: absolute;
+  bottom: -0.5rem;
+  right: 1rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(201,168,76,0.05);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ticker-wrap {
+  background: var(--gold);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.55rem 0;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 30s linear infinite;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ticker-inner span { margin: 0 2rem; }
+.ticker-inner .bull { color: var(--green-bill); }
+.ticker-inner .sym { opacity: 0.4; }
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+footer {
+  text-align: center;
+  margin-top: 4rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.3);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim { opacity: 0; animation: fadeSlideUp 0.6s ease forwards; }
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.2s; }
+.d3 { animation-delay: 0.3s; }
+.d4 { animation-delay: 0.4s; }
+.d5 { animation-delay: 0.5s; }
+.d6 { animation-delay: 0.6s; }
+.d7 { animation-delay: 0.7s; }
+.d8 { animation-delay: 0.8s; }
+
+@media (max-width: 600px) {
+  .units-grid { grid-template-columns: 1fr; }
+  .main-title { font-size: 2.6rem; }
+}
 </style>
 </head>
 <body>
@@ -469,12 +471,68 @@ footer {
 
   <div class="units-grid">
 
+    <!-- UNIT 4 — LIVE -->
+    <div class="unit-card anim d5">
+      <div class="card-num"><span class="dot"></span> Unit 4</div>
+      <span class="card-icon">📊</span>
+      <div class="card-title">Macroeconomics &amp; Policy</div>
+      <div class="card-desc">GDP, the business cycle, inflation vs. unemployment, and how the government intervenes in the economy.</div>
+      <div class="card-topics">
+        <span class="topic-tag">GDP</span>
+        <span class="topic-tag">Business Cycle</span>
+        <span class="topic-tag">Inflation</span>
+        <span class="topic-tag">Fiscal Policy</span>
+      </div>
+
+      <div class="game-links">
+        <a class="game-button" href="u4l1game.html">GDP Game</a>
+        <a class="game-button" href="u4l2game.html">Business Cycle Game</a>
+        <a class="game-button" href="u4l3game.html">Inflation Game</a>
+      </div>
+
+      <div class="card-watermark">4</div>
+    </div>
+
+    <!-- UNIT 3 -->
+    <a class="unit-card soon anim d6" href="#" onclick="return false;">
+      <div class="card-num"><span class="dot"></span> Unit 3</div>
+      <span class="card-icon">📈</span>
+      <div class="card-title">Supply &amp; Demand</div>
+      <div class="card-desc">How buyers, sellers, prices, and shortages shape everyday market decisions.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Supply</span>
+        <span class="topic-tag">Demand</span>
+        <span class="topic-tag">Equilibrium</span>
+        <span class="topic-tag">Elasticity</span>
+      </div>
+      <div class="card-cta">Coming Soon</div>
+      <span class="soon-badge">Soon</span>
+      <div class="card-watermark">3</div>
+    </a>
+
+    <!-- UNIT 2 -->
+    <a class="unit-card soon anim d7" href="#" onclick="return false;">
+      <div class="card-num"><span class="dot"></span> Unit 2</div>
+      <span class="card-icon">🤝</span>
+      <div class="card-title">The Trading Floor</div>
+      <div class="card-desc">How trade, specialization, exchange, and economic choices connect people in a market economy.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Trade</span>
+        <span class="topic-tag">Specialization</span>
+        <span class="topic-tag">Exchange</span>
+        <span class="topic-tag">Markets</span>
+      </div>
+      <div class="card-cta">Coming Soon</div>
+      <span class="soon-badge">Soon</span>
+      <div class="card-watermark">2</div>
+    </a>
+
     <!-- UNIT 1 -->
-    <a class="unit-card soon anim d5" href="#" onclick="return false;">
+    <a class="unit-card soon anim d8" href="#" onclick="return false;">
       <div class="card-num"><span class="dot"></span> Unit 1</div>
       <span class="card-icon">🏛️</span>
       <div class="card-title">Foundations of Economics</div>
-      <div class="card-desc">Scarcity, opportunity cost, trade-offs, economic systems, and the basics of how markets work.</div>
+      <div class="card-desc">Scarcity, opportunity cost, trade-offs, economic systems, and the basics of how choices shape economies.</div>
       <div class="card-topics">
         <span class="topic-tag">Scarcity</span>
         <span class="topic-tag">Opportunity Cost</span>
@@ -484,80 +542,6 @@ footer {
       <div class="card-cta">Coming Soon</div>
       <span class="soon-badge">Soon</span>
       <div class="card-watermark">1</div>
-    </a>
-
-    <!-- UNIT 2 -->
-    <a class="unit-card soon anim d5" href="#" onclick="return false;">
-      <div class="card-num"><span class="dot"></span> Unit 2</div>
-      <span class="card-icon">📈</span>
-      <div class="card-title">Supply &amp; Demand</div>
-      <div class="card-desc">How prices are set, what shifts curves, market equilibrium, and price controls.</div>
-      <div class="card-topics">
-        <span class="topic-tag">Supply</span>
-        <span class="topic-tag">Demand</span>
-        <span class="topic-tag">Equilibrium</span>
-        <span class="topic-tag">Elasticity</span>
-      </div>
-      <div class="card-cta">Coming Soon</div>
-      <span class="soon-badge">Soon</span>
-      <div class="card-watermark">2</div>
-    </a>
-
-    <!-- UNIT 3 -->
-    <a class="unit-card soon anim d6" href="#" onclick="return false;">
-      <div class="card-num"><span class="dot"></span> Unit 3</div>
-      <span class="card-icon">🏢</span>
-      <div class="card-title">Market Structures</div>
-      <div class="card-desc">Competition, monopoly, oligopoly, and how market structure shapes prices and power.</div>
-      <div class="card-topics">
-        <span class="topic-tag">Competition</span>
-        <span class="topic-tag">Monopoly</span>
-        <span class="topic-tag">Oligopoly</span>
-        <span class="topic-tag">Antitrust</span>
-      </div>
-      <div class="card-cta">Coming Soon</div>
-      <span class="soon-badge">Soon</span>
-      <div class="card-watermark">3</div>
-    </a>
-
-    <!-- UNIT 4 — LIVE -->
-<div class="unit-card anim d6">
-  <div class="card-num"><span class="dot"></span> Unit 4</div>
-  <span class="card-icon">📊</span>
-  <div class="card-title">Macroeconomics &amp; Policy</div>
-  <div class="card-desc">GDP, the business cycle, inflation vs unemployment, and how the government intervenes in the economy.</div>
-
-  <div class="card-topics">
-    <span class="topic-tag">GDP</span>
-    <span class="topic-tag">Business Cycle</span>
-    <span class="topic-tag">Inflation</span>
-    <span class="topic-tag">Fiscal Policy</span>
-  </div>
-
-  <div class="game-links">
-    <a class="game-button" href="u4l1game.html">GDP Game</a>
-    <a class="game-button" href="u4l2game.html">Business Cycle Game</a>
-    <a class="game-button" href="u4l3game.html">Inflation Game</a>
-  </div>
-
-  <div class="card-watermark">4</div>
-</div>
-
-    <!-- UNIT 5 -->
-    <a class="unit-card soon anim d7" href="#" onclick="return false;">
-      <div class="card-num"><span class="dot"></span> Unit 5</div>
-      <span class="card-icon">🌎</span>
-      <div class="card-title">Personal Finance &amp; Global Econ</div>
-      <div class="card-desc">Budgeting, credit, trade, exchange rates, and the global economy's effect on everyday life.</div>
-      <div class="card-topics">
-        <span class="topic-tag">Budgeting</span>
-        <span class="topic-tag">Credit</span>
-        <span class="topic-tag">Trade</span>
-        <span class="topic-tag">Exchange Rates</span>
-      </div>
-      <div class="card-cta">Coming Soon</div>
-      <span class="soon-badge">Soon</span>
-      <div class="card-watermark">5</div>
     </a>
 
   </div>
@@ -599,7 +583,6 @@ footer {
 </div>
 
 <script>
-/* ── MONEY RAIN CANVAS ── */
 var canvas = document.getElementById('money-canvas');
 var ctx = canvas.getContext('2d');
 var W, H, drops = [];
@@ -626,7 +609,7 @@ function Drop() {
     this.drift = (Math.random() - 0.5) * 0.3;
   };
   this.reset();
-  this.y = Math.random() * H; // start spread out
+  this.y = Math.random() * H;
 }
 
 for (var i = 0; i < 60; i++) drops.push(new Drop());
@@ -650,9 +633,6 @@ function animateMoney() {
   requestAnimationFrame(animateMoney);
 }
 animateMoney();
-
-/* ── UNIT 4 sub-links — clicking card goes to L1; 
-   future: could route to a unit hub page ── */
 </script>
 </body>
 </html>
