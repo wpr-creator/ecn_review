@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Price of Everything</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0d0d;--surface:#1a1a1a;--card:#242424;--ink:#f0f0f0;--muted:#999;--accent:#f7c948;--accent2:#5b8dee;--accent3:#e05c5c;--green:#4caf7d;--border:rgba(255,255,255,0.10);--correct:#4caf7d;--wrong:#e05c5c;--shadow:0 4px 20px rgba(0,0,0,0.5);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(247,201,72,0.03) 40px);pointer-events:none;}
+  header{padding:2rem 2rem 1.5rem;text-align:center;}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;}
+  h1{font-family:'Outfit',sans-serif;font-size:clamp(2.5rem,8vw,5rem);font-weight:800;line-height:0.9;color:var(--ink);}
+  h1 .yl{color:var(--accent);}h1 .bl{color:var(--accent2);}
+  .subtitle{margin-top:0.6rem;color:var(--muted);font-size:0.85rem;font-family:'Space Mono',monospace;}
+  .see-bar{display:flex;justify-content:center;align-items:center;gap:1rem;padding:0.7rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .see-lbl{font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+  .see-inf{color:var(--accent);}.see-unem{color:var(--accent2);}
+  .score-bar{display:flex;justify-content:center;gap:2rem;padding:1rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);margin-bottom:2rem;}
+  .stat{text-align:center;}
+  .sv{font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;line-height:1;}
+  .sv.green{color:var(--correct);}.sv.orange{color:var(--accent);}.sv.blue{color:var(--accent2);}
+  .slbl{font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.2rem;}
+  .mode-tabs{display:flex;justify-content:center;gap:0.5rem;padding:0 2rem 1.5rem;flex-wrap:wrap;}
+  .tab-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:0.5rem 1.25rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+  .tab-btn.active,.tab-btn:hover{background:var(--accent);color:#1a1206;border-color:var(--accent);}
+  .game-area{max-width:860px;margin:0 auto;padding:0 1.5rem 4rem;}
+  .sec-title{font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:0.25rem;color:var(--ink);}
+  .sec-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;font-family:'Space Mono',monospace;}
+  .check-btn{display:block;margin:1rem auto;background:var(--accent);color:#1a1206;border:none;padding:0.75rem 2.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
+  .check-btn:hover{transform:scale(1.03);}
+  .hint-bar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--muted);text-align:center;margin-bottom:1rem;}
+  .hint-bar strong{color:var(--accent);}
+  .ut-game{display:none;}.ut-game.active{display:block;}
+  .scen-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
+  .scen-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.18s;line-height:1.4;}
+  .scen-chip:hover:not(.sc-used){border-color:var(--accent);}
+  .scen-chip.sc-sel{border-color:var(--accent);background:rgba(247,201,72,0.08);}
+  .scen-chip.sc-used{opacity:0.3;pointer-events:none;}
+  .ut-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;}
+  .ut-col{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:160px;}
+  .ut-col-head{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);cursor:pointer;}
+  .col-fr{color:var(--accent);}.col-st{color:var(--accent2);}.col-cy{color:var(--accent3);}
+  .ut-col-sub{font-size:0.7rem;color:var(--muted);margin-bottom:0.6rem;}
+  .ut-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;}
+  .placed-sc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.45rem 0.7rem;font-size:0.72rem;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3;}
+  .placed-sc:hover{opacity:0.6;}
+  .result-row{font-size:0.8rem;padding:0.4rem 0.75rem;border-radius:6px;margin:0.2rem 0;font-weight:600;line-height:1.4;}
+  .result-row.ok{background:rgba(76,175,125,0.12);color:var(--correct);}
+  .result-row.bad{background:rgba(224,92,92,0.1);color:var(--wrong);}
+  .ct-game{display:none;}.ct-game.active{display:block;}
+  .worker-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
+  .wkr-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.18s;line-height:1.4;display:block;width:100%;text-align:left;}
+  .wkr-chip:hover:not(.wk-used){border-color:var(--accent);}
+  .wkr-chip.wk-sel{border-color:var(--accent);background:rgba(247,201,72,0.08);}
+  .wkr-chip.wk-used{opacity:0.3;pointer-events:none;}
+  .ct-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem;}
+  .ct-col{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:180px;}
+  .ct-col-head{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);cursor:pointer;}
+  .col-yes{color:var(--green);}.col-no{color:var(--accent3);}
+  .ct-col-sub{font-size:0.7rem;color:var(--muted);margin-bottom:0.6rem;}
+  .ct-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;}
+  .placed-wk{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.45rem 0.7rem;font-size:0.72rem;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3;}
+  .placed-wk:hover{opacity:0.6;}
+  .fl-game{display:none;}.fl-game.active{display:block;}
+  .card-wrap{perspective:1000px;width:100%;max-width:560px;margin:0 auto 1.5rem;height:230px;cursor:pointer;}
+  .card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s;}
+  .card-inner.flipped{transform:rotateY(180deg);}
+  .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+  .card-front{background:var(--card);border:1px solid var(--border);}
+  .card-back{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid var(--accent2);transform:rotateY(180deg);}
+  .card-term{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--ink);}
+  .card-tag{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+  .card-back .card-tag{color:var(--accent);}
+  .card-def{font-size:0.88rem;line-height:1.55;color:rgba(255,255,255,0.9);}
+  .card-nav{display:flex;justify-content:center;align-items:center;gap:1.5rem;margin-bottom:1rem;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--ink);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .card-prog{color:var(--muted);font-family:'Space Mono',monospace;font-size:0.75rem;}
+  .mc-game{display:none;}.mc-game.active{display:block;}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
+  .q-num{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+  .q-stem{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:1.25rem;color:var(--ink);}
+  .choices{display:flex;flex-direction:column;gap:0.5rem;}
+  .ch-btn{background:var(--surface);border:1px solid var(--border);color:var(--ink);padding:0.75rem 1rem;border-radius:8px;text-align:left;font-family:'Outfit',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-weight:600;}
+  .ch-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(247,201,72,0.06);}
+  .ch-btn.correct{background:rgba(76,175,125,0.15);border-color:var(--correct);color:var(--correct);}
+  .ch-btn.wrong{background:rgba(224,92,92,0.1);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:0.75rem;font-size:0.82rem;padding:0.7rem 1rem;border-radius:8px;font-weight:700;display:none;line-height:1.5;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(76,175,125,0.1);color:var(--correct);}
+  .feedback.wrong{background:rgba(224,92,92,0.08);color:var(--wrong);}
+  .next-btn{margin-top:1rem;background:var(--accent);color:#1a1206;border:none;padding:0.6rem 1.75rem;border-radius:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:0.75rem;cursor:pointer;display:none;transition:all 0.2s;}
+  .next-btn.show{display:inline-block;}
+  .next-btn:hover{transform:scale(1.04);}
+  .qz-done{text-align:center;padding:3rem 1rem;display:none;}
+  .qz-done.show{display:block;}
+  .big-sc{font-family:'Space Mono',monospace;font-size:5rem;font-weight:700;color:var(--accent);line-height:1;}
+  .restart-btn{margin-top:1.5rem;background:var(--accent2);color:#fff;border:none;padding:0.75rem 2.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
+  .restart-btn:hover{transform:scale(1.04);}
+  @media(max-width:600px){.ut-cols{grid-template-columns:1fr;}.ct-cols{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Unit 4 · Lesson 3 · Economics</div>
+  <h1>THE PRICE<br>OF <span class="yl">EVERY</span><span class="bl">THING</span></h1>
+  <p class="subtitle">Inflation vs Unemployment — the see-saw with no clean fix</p>
+</header>
+<div class="see-bar">
+  <span class="see-lbl see-inf">INFLATION UP</span>
+  <span style="color:var(--muted);font-size:1.1rem;">⇌</span>
+  <span class="see-lbl see-unem">UNEMPLOYMENT UP</span>
+  <span style="margin-left:1rem;font-size:0.65rem;font-family:'Space Mono',monospace;color:var(--muted);">PHILLIPS CURVE</span>
+</div>
+<div class="score-bar">
+  <div class="stat"><div class="sv green" id="sc-c">0</div><div class="slbl">Correct</div></div>
+  <div class="stat"><div class="sv orange" id="sc-w">0</div><div class="slbl">Wrong</div></div>
+  <div class="stat"><div class="sv blue" id="sc-s">0</div><div class="slbl">Streak</div></div>
+</div>
+<div class="mode-tabs">
+  <button class="tab-btn active" onclick="sw('ut')">Unemployment Sorter</button>
+  <button class="tab-btn" onclick="sw('ct')">Counted in the Rate?</button>
+  <button class="tab-btn" onclick="sw('fl')">Key Terms</button>
+  <button class="tab-btn" onclick="sw('mc')">Quick Quiz</button>
+</div>
+<div class="game-area">
+
+<div class="ut-game active" id="ut-game">
+  <div class="sec-title">What Type of Unemployment?</div>
+  <div class="sec-desc">Scenarios shuffle every load. Click a scenario, then click the correct column.</div>
+  <div class="hint-bar"><strong>Selected:</strong> <span id="ut-sel" style="color:var(--muted)">none — click a scenario first</span></div>
+  <div class="scen-list" id="scen-list"></div>
+  <div class="ut-cols">
+    <div class="ut-col">
+      <div class="ut-col-head col-fr" onclick="placeScen('frictional')">Frictional ▼</div>
+      <div class="ut-col-sub">Temporary — between jobs</div>
+      <div class="ut-zone" id="uz-frictional" onclick="placeScen('frictional')"></div>
+    </div>
+    <div class="ut-col">
+      <div class="ut-col-head col-st" onclick="placeScen('structural')">Structural ▼</div>
+      <div class="ut-col-sub">Permanent — skills mismatch</div>
+      <div class="ut-zone" id="uz-structural" onclick="placeScen('structural')"></div>
+    </div>
+    <div class="ut-col">
+      <div class="ut-col-head col-cy" onclick="placeScen('cyclical')">Cyclical ▼</div>
+      <div class="ut-col-sub">Follows recession/recovery</div>
+      <div class="ut-zone" id="uz-cyclical" onclick="placeScen('cyclical')"></div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkUT()">Check My Answers</button>
+  <div id="ut-fb"></div>
+  <button class="check-btn" id="ut-rb" style="display:none;background:var(--accent2)" onclick="resetUT()">Try Again</button>
+</div>
+
+<div class="ct-game" id="ct-game">
+  <div class="sec-title">Counted in the Unemployment Rate?</div>
+  <div class="sec-desc">Workers shuffle every load. Click a worker, then click the correct column.</div>
+  <div class="hint-bar"><strong>Selected:</strong> <span id="ct-sel" style="color:var(--muted)">none — click a worker first</span></div>
+  <div class="worker-list" id="worker-list"></div>
+  <div class="ct-cols">
+    <div class="ct-col">
+      <div class="ct-col-head col-yes" onclick="placeWkr('yes')">COUNTED ▼</div>
+      <div class="ct-col-sub">Actively searching for work</div>
+      <div class="ct-zone" id="cz-yes" onclick="placeWkr('yes')"></div>
+    </div>
+    <div class="ct-col">
+      <div class="ct-col-head col-no" onclick="placeWkr('no')">NOT COUNTED ▼</div>
+      <div class="ct-col-sub">Discouraged, underemployed, or informal</div>
+      <div class="ct-zone" id="cz-no" onclick="placeWkr('no')"></div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkCT()">Check My Answers</button>
+  <div id="ct-fb"></div>
+  <button class="check-btn" id="ct-rb" style="display:none;background:var(--accent2)" onclick="resetCT()">Try Again</button>
+</div>
+
+<div class="fl-game" id="fl-game">
+  <div class="sec-title">Key Terms</div>
+  <div class="sec-desc">Cards shuffle every time. Click to flip.</div>
+  <p style="text-align:center;font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1rem;">[ CLICK CARD TO FLIP ]</p>
+  <div class="card-wrap" onclick="flipCard()">
+    <div class="card-inner" id="ci">
+      <div class="card-face card-front"><div><div class="card-tag">Term</div><div class="card-term" id="ct-t">—</div></div></div>
+      <div class="card-face card-back"><div><div class="card-tag">Definition</div><div class="card-def" id="ct-d">—</div></div></div>
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="nav-btn" onclick="prevCard()">&#8592;</button>
+    <span class="card-prog" id="cp">1 / 10</span>
+    <button class="nav-btn" onclick="nextCard()">&#8594;</button>
+  </div>
+</div>
+
+<div class="mc-game" id="mc-game">
+  <div class="sec-title">Quick Quiz</div>
+  <div class="sec-desc">5 questions in random order. Choices shuffle too.</div>
+  <div id="mc-qs"></div>
+  <div class="qz-done" id="qz-done">
+    <div style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">YOUR SCORE</div>
+    <div class="big-sc" id="fin-sc">5/5</div>
+    <div style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem" id="fin-msg"></div>
+    <button class="restart-btn" onclick="restartQuiz()">Play Again</button>
+  </div>
+</div>
+
+</div>
+<script>
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+var gC=0,gW=0,gS=0;
+function addScore(ok){if(ok){gC++;gS++;}else{gW++;gS=0;}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS;}
+function sw(m){['ut','ct','fl','mc'].forEach(function(id){document.getElementById(id+'-game').classList.remove('active');});document.getElementById(m+'-game').classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',['ut','ct','fl','mc'][i]===m);});}
+
+var SCENS=[
+  {id:'s1',text:'Maria just graduated and is applying for her first marketing job',type:'frictional'},
+  {id:'s2',text:"Carlos was laid off from Amazon's Otay Mesa warehouse after robots replaced his role",type:'structural'},
+  {id:'s3',text:'DeShawn lost his restaurant job when sales collapsed during a recession',type:'cyclical'},
+  {id:'s4',text:'Jaime left one teaching job and is searching for a better position across town',type:'frictional'},
+  {id:'s5',text:'Factory workers in National City replaced by automation — no recovery brings those jobs back',type:'structural'},
+  {id:'s6',text:'Hundreds of retail workers laid off during a contraction and rehired when growth resumes',type:'cyclical'},
+];
+var utSel=null,utPlaced={frictional:[],structural:[],cyclical:[]};
+function initUT(){
+  utSel=null;utPlaced={frictional:[],structural:[],cyclical:[]};
+  var shuffled=shuffle(SCENS);
+  var el=document.getElementById('scen-list');el.innerHTML='';
+  shuffled.forEach(function(s){var d=document.createElement('div');d.className='scen-chip';d.id='sc-'+s.id;d.textContent=s.text;d.onclick=function(){pickScen(s.id);};el.appendChild(d);});
+  ['frictional','structural','cyclical'].forEach(function(z){document.getElementById('uz-'+z).innerHTML='';});
+  document.getElementById('ut-sel').textContent='none — click a scenario first';document.getElementById('ut-sel').style.color='var(--muted)';
+  document.getElementById('ut-fb').innerHTML='';document.getElementById('ut-rb').style.display='none';
+}
+function pickScen(sid){
+  if(utSel===sid){utSel=null;document.querySelectorAll('.scen-chip').forEach(function(c){c.classList.remove('sc-sel');});document.getElementById('ut-sel').textContent='none — click a scenario first';document.getElementById('ut-sel').style.color='var(--muted)';return;}
+  document.querySelectorAll('.scen-chip').forEach(function(c){c.classList.remove('sc-sel');});
+  document.getElementById('sc-'+sid).classList.add('sc-sel');utSel=sid;
+  var s=SCENS.find(function(x){return x.id===sid;});
+  document.getElementById('ut-sel').textContent=s.text.substring(0,45)+'... — now click a column';document.getElementById('ut-sel').style.color='var(--accent)';
+}
+function placeScen(zone){
+  if(!utSel)return;var s=SCENS.find(function(x){return x.id===utSel;});
+  ['frictional','structural','cyclical'].forEach(function(z){var idx=utPlaced[z].indexOf(utSel);if(idx>-1){utPlaced[z].splice(idx,1);var el=document.getElementById('psc-'+utSel);if(el)el.remove();}});
+  utPlaced[zone].push(utSel);
+  var ze=document.getElementById('uz-'+zone);var d=document.createElement('div');d.className='placed-sc';d.id='psc-'+utSel;d.textContent=s.text;
+  (function(sid,z){d.onclick=function(e){e.stopPropagation();var i=utPlaced[z].indexOf(sid);if(i>-1){utPlaced[z].splice(i,1);var el2=document.getElementById('psc-'+sid);if(el2)el2.remove();document.getElementById('sc-'+sid).classList.remove('sc-used');}}})(utSel,zone);
+  ze.appendChild(d);document.getElementById('sc-'+utSel).classList.add('sc-used');document.getElementById('sc-'+utSel).classList.remove('sc-sel');
+  utSel=null;document.getElementById('ut-sel').textContent='none — click a scenario first';document.getElementById('ut-sel').style.color='var(--muted)';
+}
+function checkUT(){
+  var all=SCENS.every(function(s){return['frictional','structural','cyclical'].some(function(z){return utPlaced[z].indexOf(s.id)>-1;});});
+  if(!all){document.getElementById('ut-fb').innerHTML='<div style="color:var(--accent);text-align:center;font-size:0.82rem;margin-top:0.5rem">Place all scenarios first.</div>';return;}
+  var html='';var num=0;
+  SCENS.forEach(function(s){var placed=['frictional','structural','cyclical'].find(function(z){return utPlaced[z].indexOf(s.id)>-1;});var ok=placed===s.type;if(ok)num++;html+='<div class="result-row '+(ok?'ok':'bad')+'">'+(ok?'OK':'Should be '+s.type.toUpperCase())+': '+s.text+'</div>';});
+  document.getElementById('ut-fb').innerHTML=html;addScore(num===SCENS.length);document.getElementById('ut-rb').style.display='block';
+}
+function resetUT(){initUT();}
+
+var WKRS=[
+  {id:'w1',text:'Rashida was laid off and is sending job applications every week',ans:'yes'},
+  {id:'w2',text:'Miguel stopped applying after 6 months — he gave up looking',ans:'no'},
+  {id:'w3',text:'Lena works 10 hours a week at Target but wants a full-time job',ans:'no'},
+  {id:'w4',text:'Antonio lost his cash yard-work job — never had formal paperwork',ans:'no'},
+  {id:'w5',text:'Sophia just graduated and is actively looking for her first job',ans:'yes'},
+  {id:'w6',text:'James was laid off, finished a training program, and is now applying',ans:'yes'},
+];
+var ctSel=null,ctPlaced={yes:[],no:[]};
+function initCT(){
+  ctSel=null;ctPlaced={yes:[],no:[]};
+  var shuffled=shuffle(WKRS);
+  var el=document.getElementById('worker-list');el.innerHTML='';
+  shuffled.forEach(function(w){var d=document.createElement('button');d.className='wkr-chip';d.id='wc-'+w.id;d.textContent=w.text;d.onclick=function(){pickWkr(w.id);};el.appendChild(d);});
+  ['yes','no'].forEach(function(z){document.getElementById('cz-'+z).innerHTML='';});
+  document.getElementById('ct-sel').textContent='none — click a worker first';document.getElementById('ct-sel').style.color='var(--muted)';
+  document.getElementById('ct-fb').innerHTML='';document.getElementById('ct-rb').style.display='none';
+}
+function pickWkr(wid){
+  if(ctSel===wid){ctSel=null;document.querySelectorAll('.wkr-chip').forEach(function(c){c.classList.remove('wk-sel');});document.getElementById('ct-sel').textContent='none — click a worker first';document.getElementById('ct-sel').style.color='var(--muted)';return;}
+  document.querySelectorAll('.wkr-chip').forEach(function(c){c.classList.remove('wk-sel');});
+  document.getElementById('wc-'+wid).classList.add('wk-sel');ctSel=wid;
+  var w=WKRS.find(function(x){return x.id===wid;});
+  document.getElementById('ct-sel').textContent=w.text.substring(0,45)+'... — now click a column';document.getElementById('ct-sel').style.color='var(--accent)';
+}
+function placeWkr(zone){
+  if(!ctSel)return;var w=WKRS.find(function(x){return x.id===ctSel;});
+  ['yes','no'].forEach(function(z){var idx=ctPlaced[z].indexOf(ctSel);if(idx>-1){ctPlaced[z].splice(idx,1);var el=document.getElementById('pwk-'+ctSel);if(el)el.remove();}});
+  ctPlaced[zone].push(ctSel);
+  var ze=document.getElementById('cz-'+zone);var d=document.createElement('div');d.className='placed-wk';d.id='pwk-'+ctSel;d.textContent=w.text;
+  (function(wid,z){d.onclick=function(e){e.stopPropagation();var i=ctPlaced[z].indexOf(wid);if(i>-1){ctPlaced[z].splice(i,1);var el2=document.getElementById('pwk-'+wid);if(el2)el2.remove();document.getElementById('wc-'+wid).classList.remove('wk-used');}}})(ctSel,zone);
+  ze.appendChild(d);document.getElementById('wc-'+ctSel).classList.add('wk-used');document.getElementById('wc-'+ctSel).classList.remove('wk-sel');
+  ctSel=null;document.getElementById('ct-sel').textContent='none — click a worker first';document.getElementById('ct-sel').style.color='var(--muted)';
+}
+function checkCT(){
+  var all=WKRS.every(function(w){return['yes','no'].some(function(z){return ctPlaced[z].indexOf(w.id)>-1;});});
+  if(!all){document.getElementById('ct-fb').innerHTML='<div style="color:var(--accent);text-align:center;font-size:0.82rem;margin-top:0.5rem">Place all workers first.</div>';return;}
+  var html='';var num=0;
+  WKRS.forEach(function(w){var placed=['yes','no'].find(function(z){return ctPlaced[z].indexOf(w.id)>-1;});var ok=placed===w.ans;if(ok)num++;var lbl=w.ans==='yes'?'COUNTED':'NOT COUNTED';html+='<div class="result-row '+(ok?'ok':'bad')+'">'+(ok?lbl:'Should be '+lbl)+': '+w.text+'</div>';});
+  document.getElementById('ct-fb').innerHTML=html;addScore(num===WKRS.length);document.getElementById('ct-rb').style.display='block';
+}
+function resetCT(){initCT();}
+
+var CARDS=shuffle([
+  {t:'Inflation',d:'A sustained rise in the general price level across the whole economy.'},
+  {t:'Consumer Price Index',d:'A government tool that tracks a fixed basket of goods to measure inflation over time.'},
+  {t:'Purchasing Power',d:'The real quantity of goods a dollar can buy — falls when inflation rises.'},
+  {t:'Frictional Unemployment',d:'Short-term unemployment when workers are between jobs or entering the labor market for the first time.'},
+  {t:'Structural Unemployment',d:"Long-term unemployment when workers' skills no longer match available jobs — often caused by automation."},
+  {t:'Cyclical Unemployment',d:'Unemployment caused directly by a recession. Eases when the economy recovers.'},
+  {t:'Unemployment Rate',d:'Percentage of the labor force actively seeking work but unable to find it.'},
+  {t:'Discouraged Workers',d:'Workers who stopped searching and are removed from the official unemployment count entirely.'},
+  {t:'Underemployed Workers',d:'Workers in part-time roles who need and want full-time hours — counted as employed in official data.'},
+  {t:'Phillips Curve',d:'Economic model showing the trade-off between inflation and unemployment — when one goes down, the other tends to rise.'},
+]);
+var cI=0,cF=false;
+function renderCard(){document.getElementById('ct-t').textContent=CARDS[cI].t;document.getElementById('ct-d').textContent=CARDS[cI].d;document.getElementById('cp').textContent=(cI+1)+' / '+CARDS.length;document.getElementById('ci').classList.remove('flipped');cF=false;}
+function flipCard(){cF=!cF;document.getElementById('ci').classList.toggle('flipped',cF);}
+function nextCard(){cI=(cI+1)%CARDS.length;renderCard();}
+function prevCard(){cI=(cI-1+CARDS.length)%CARDS.length;renderCard();}
+
+var ALLQ=[
+  {s:'Between 2020 and 2022, grocery prices rose over 10%. A National City family spending $800/month now pays $880 for the same items. What does this describe?',c:['Inflation reducing purchasing power','Deflation raising purchasing power','GDP growth increasing consumption'],a:0,f:'Inflation means the same dollar buys less. Purchasing power falls as the price level rises.'},
+  {s:"Amazon automates its Otay Mesa warehouse. Workers replaced by machines can't find new jobs even as the economy recovers. What type of unemployment?",c:['Structural unemployment','Cyclical unemployment','Frictional unemployment'],a:0,f:'Structural unemployment is permanent — the job itself is gone. Recovery does not bring it back.'},
+  {s:'The Phillips Curve shows that when unemployment is very low, what tends to happen to inflation?',c:['Inflation increases','Inflation decreases','Inflation stays flat'],a:0,f:'Low unemployment means more spending, which pushes prices up. The see-saw tips toward inflation.'},
+  {s:'A San Diego worker gave up searching after 8 months. Is she counted in the official unemployment rate?',c:['No — she is a discouraged worker removed from the count','Yes — all unemployed people are counted','Yes — she is counted as underemployed'],a:0,f:'Discouraged workers disappear from the data entirely. The real rate is always higher than the published number.'},
+  {s:'The government uses the CPI to measure inflation. What does the CPI actually track?',c:['The price of a fixed basket of goods over time','The total value of all goods produced in the country','The average wage paid to workers each quarter'],a:0,f:'The Consumer Price Index prices the same basket of goods repeatedly to measure whether prices are rising or falling.'},
+  {s:'A worker who stopped searching for a job 3 months ago is an example of what?',c:['A discouraged worker','An underemployed worker','A cyclically unemployed worker'],a:0,f:'Discouraged workers have left the labor force entirely — they are no longer counted in the official unemployment rate.'},
+];
+var SQ=[],mcAns=[],mcSc=0;
+function initQuiz(){
+  SQ=shuffle(ALLQ).slice(0,5);mcAns=new Array(SQ.length).fill(false);mcSc=0;
+  var c=document.getElementById('mc-qs');c.innerHTML='';document.getElementById('qz-done').classList.remove('show');
+  SQ.forEach(function(q,qi){
+    var idxs=shuffle([0,1,2]);var nc=idxs.map(function(i){return q.c[i];});var na=idxs.indexOf(q.a);
+    var card=document.createElement('div');card.className='q-card';card.id='q'+qi;
+    card.innerHTML='<div class="q-num">QUESTION '+(qi+1)+' / '+SQ.length+'</div><div class="q-stem">'+q.s+'</div><div class="choices">'+nc.map(function(ch,ci){return'<button class="ch-btn" onclick="ansQ('+qi+','+ci+','+na+')">'+String.fromCharCode(65+ci)+'. '+ch+'</button>';}).join('')+'</div><div class="feedback" id="fb'+qi+'"></div><button class="next-btn" id="nb'+qi+'" onclick="nxt('+qi+')">'+(qi<SQ.length-1?'NEXT':'SEE SCORE')+'</button>';
+    c.appendChild(card);if(qi>0)card.style.display='none';
+  });
+}
+function ansQ(qi,ci,correct){
+  if(mcAns[qi])return;mcAns[qi]=true;var q=SQ[qi];var ok=ci===correct;if(ok)mcSc++;addScore(ok);
+  document.getElementById('q'+qi).querySelectorAll('.ch-btn').forEach(function(b,i){b.disabled=true;if(i===correct)b.classList.add('correct');else if(i===ci&&!ok)b.classList.add('wrong');});
+  var fb=document.getElementById('fb'+qi);fb.textContent=(ok?'Correct! ':'Not quite. ')+q.f;fb.className='feedback show '+(ok?'correct':'wrong');
+  document.getElementById('nb'+qi).classList.add('show');
+}
+function nxt(qi){
+  if(qi<SQ.length-1){var n=document.getElementById('q'+(qi+1));n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'start'});}
+  else{var d=document.getElementById('qz-done');d.classList.add('show');document.getElementById('fin-sc').textContent=mcSc+'/'+SQ.length;document.getElementById('fin-msg').textContent=['Keep at it — review the terms.','Getting there!','Solid work!','Almost perfect!','Perfect! L3 locked.'][mcSc-1]||'';d.scrollIntoView({behavior:'smooth'});}
+}
+function restartQuiz(){initQuiz();}
+initUT();initCT();renderCard();initQuiz();
+</script>
+</body>
+</html>

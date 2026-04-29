@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Measuring the Machine — GDP</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0e1a;--surface:#111827;--card:#1a2235;--accent:#00e5ff;--accent2:#ff6b35;--accent3:#a8ff3e;--text:#e8eaf0;--muted:#6b7280;--correct:#22c55e;--wrong:#ef4444;--border:rgba(255,255,255,0.08);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+  header{padding:2rem 2rem 1rem;text-align:center;}
+  .eyebrow{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,5rem);letter-spacing:0.05em;line-height:0.95;color:#fff;}
+  h1 span{color:var(--accent);}
+  .subtitle{margin-top:0.5rem;color:var(--muted);font-size:0.9rem;}
+  .score-bar{display:flex;justify-content:center;gap:2rem;padding:1rem 2rem;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:2rem;}
+  .stat{text-align:center;}
+  .stat-val{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;}
+  .stat-val.green{color:var(--correct);}.stat-val.orange{color:var(--accent2);}.stat-val.blue{color:var(--accent);}
+  .stat-label{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);}
+  .mode-tabs{display:flex;justify-content:center;gap:0.5rem;padding:0 2rem 1.5rem;flex-wrap:wrap;}
+  .tab-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:0.5rem 1.25rem;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;}
+  .tab-btn.active,.tab-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+  .game-area{max-width:860px;margin:0 auto;padding:0 1.5rem 4rem;}
+  .sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.08em;margin-bottom:0.25rem;}
+  .sec-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
+  .check-btn{display:block;margin:1rem auto;background:var(--accent);color:var(--bg);border:none;padding:0.75rem 2.5rem;border-radius:999px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s;}
+  .check-btn:hover{transform:scale(1.04);}
+  .hint-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--muted);text-align:center;margin-bottom:1rem;}
+  .hint-bar strong{color:var(--accent);}
+
+  /* SORT GAME */
+  .sort-game{display:none;}.sort-game.active{display:block;}
+  .sort-pool{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:1.25rem;}
+  .sort-chip{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.9rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;user-select:none;}
+  .sort-chip:hover:not(.sc-used){border-color:var(--accent);}
+  .sort-chip.sc-selected{border-color:var(--accent);background:rgba(0,229,255,0.1);color:var(--accent);}
+  .sort-chip.sc-used{opacity:0.25;pointer-events:none;}
+  .sort-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1rem;}
+  .sort-col{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:200px;}
+  .sort-col-head{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.05em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);cursor:pointer;}
+  .col-counts{color:var(--accent3);}.col-not{color:var(--accent2);}
+  .sort-zone{min-height:80px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;}
+  .placed-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.7rem;font-size:0.75rem;font-weight:600;color:var(--text);cursor:pointer;line-height:1.3;}
+  .placed-chip:hover{opacity:0.6;}
+  .result-row{font-size:0.78rem;padding:0.4rem 0.6rem;border-radius:6px;margin:0.2rem 0;font-weight:600;}
+  .result-row.ok{background:rgba(34,197,94,0.12);color:var(--correct);}
+  .result-row.bad{background:rgba(239,68,68,0.12);color:var(--wrong);}
+
+  /* FORMULA GAME */
+  .formula-game{display:none;}.formula-game.active{display:block;}
+  .formula-display{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;min-height:3.5rem;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.25rem;font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.1em;}
+  .formula-piece-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;cursor:pointer;transition:all 0.2s;margin:0.25rem;}
+  .formula-piece-btn:hover:not(.fp-used){border-color:var(--accent);color:var(--accent);transform:scale(1.05);}
+  .formula-piece-btn.fp-used{opacity:0.25;pointer-events:none;}
+  .formula-result{font-weight:700;font-size:1rem;margin-top:0.75rem;min-height:1.5rem;text-align:center;}
+  .formula-result.ok{color:var(--correct);}.formula-result.bad{color:var(--wrong);}
+  .clear-formula{display:block;margin:0.5rem auto 0;background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.4rem 1rem;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.8rem;cursor:pointer;}
+  .clear-formula:hover{border-color:var(--accent2);color:var(--accent2);}
+
+  /* FLASHCARDS */
+  .flash-game{display:none;}.flash-game.active{display:block;}
+  .card-wrap{perspective:1000px;width:100%;max-width:560px;margin:0 auto 1.5rem;height:220px;cursor:pointer;}
+  .card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s;}
+  .card-inner.flipped{transform:rotateY(180deg);}
+  .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+  .card-front{background:var(--card);border:1px solid var(--border);}
+  .card-back{background:linear-gradient(135deg,#0a2440,#001a2e);border:1px solid var(--accent);transform:rotateY(180deg);}
+  .card-term{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.05em;color:#fff;}
+  .card-tag{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+  .card-back .card-tag{color:var(--accent);}
+  .card-def{font-size:0.9rem;line-height:1.5;color:var(--text);}
+  .card-nav{display:flex;justify-content:center;align-items:center;gap:1.5rem;margin-bottom:1rem;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .card-progress{color:var(--muted);font-size:0.8rem;}
+
+  /* MC QUIZ */
+  .mc-game{display:none;}.mc-game.active{display:block;}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
+  .q-num{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+  .q-stem{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:1.25rem;color:var(--text);}
+  .choices{display:flex;flex-direction:column;gap:0.5rem;}
+  .ch-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.75rem 1rem;border-radius:10px;text-align:left;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-weight:500;}
+  .ch-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(0,229,255,0.06);}
+  .ch-btn.correct{background:rgba(34,197,94,0.15);border-color:var(--correct);color:var(--correct);}
+  .ch-btn.wrong{background:rgba(239,68,68,0.12);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:0.75rem;font-size:0.82rem;padding:0.6rem 0.9rem;border-radius:8px;font-weight:600;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(34,197,94,0.12);color:var(--correct);}
+  .feedback.wrong{background:rgba(239,68,68,0.1);color:var(--wrong);}
+  .next-btn{margin-top:1rem;background:var(--accent);color:var(--bg);border:none;padding:0.6rem 1.75rem;border-radius:999px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;display:none;transition:all 0.2s;}
+  .next-btn.show{display:inline-block;}
+  .next-btn:hover{transform:scale(1.04);}
+  .qz-done{text-align:center;padding:3rem 1rem;display:none;}
+  .qz-done.show{display:block;}
+  .big-score{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--accent);line-height:1;}
+  .restart-btn{margin-top:1.5rem;background:var(--accent2);color:#fff;border:none;padding:0.75rem 2.5rem;border-radius:999px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s;}
+  .restart-btn:hover{transform:scale(1.04);}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Unit 4 · Lesson 1 · Economics</div>
+  <h1>MEASURING<br>THE <span>MACHINE</span></h1>
+  <p class="subtitle">GDP — What the Scoreboard Counts (and What It Misses)</p>
+</header>
+<div class="score-bar">
+  <div class="stat"><div class="stat-val green" id="sc-c">0</div><div class="stat-label">Correct</div></div>
+  <div class="stat"><div class="stat-val orange" id="sc-w">0</div><div class="stat-label">Wrong</div></div>
+  <div class="stat"><div class="stat-val blue" id="sc-s">0</div><div class="stat-label">Streak 🔥</div></div>
+</div>
+<div class="mode-tabs">
+  <button class="tab-btn active" onclick="sw('sort')">📦 GDP Sort</button>
+  <button class="tab-btn" onclick="sw('formula')">🔢 Formula Builder</button>
+  <button class="tab-btn" onclick="sw('flash')">⚡ Key Terms</button>
+  <button class="tab-btn" onclick="sw('mc')">🎯 Quick Quiz</button>
+</div>
+<div class="game-area">
+
+<!-- GDP SORT -->
+<div class="sort-game active" id="sort-game">
+  <div class="sec-title">📦 Does It Count in GDP?</div>
+  <div class="sec-desc">Click an item to select it, then click the correct column.</div>
+  <div class="hint-bar"><strong>Selected:</strong> <span id="sort-sel-display" style="color:var(--muted)">none — click an item first</span></div>
+  <div class="sort-pool" id="sort-pool"></div>
+  <div class="sort-cols">
+    <div class="sort-col">
+      <div class="sort-col-head col-counts" onclick="placeItem('counts')">✅ COUNTS IN GDP ▼</div>
+      <div class="sort-zone" id="sz-counts" onclick="placeItem('counts')"></div>
+    </div>
+    <div class="sort-col">
+      <div class="sort-col-head col-not" onclick="placeItem('not')">❌ NOT IN GDP ▼</div>
+      <div class="sort-zone" id="sz-not" onclick="placeItem('not')"></div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkSort()">Check My Answers</button>
+  <div id="sort-fb"></div>
+  <button class="check-btn" id="sort-rb" style="display:none;background:var(--accent2)" onclick="resetSort()">Try Again</button>
+</div>
+
+<!-- FORMULA BUILDER -->
+<div class="formula-game" id="formula-game">
+  <div class="sec-title">🔢 Build the GDP Formula</div>
+  <div class="sec-desc">Click the pieces in the correct order. The pieces are shuffled — figure out where each one goes.</div>
+  <div class="formula-display" id="formula-display"><span style="color:var(--muted);font-size:1rem;font-weight:400">Click pieces below to build the formula</span></div>
+  <div id="formula-pieces" style="display:flex;flex-wrap:wrap;justify-content:center;"></div>
+  <div class="formula-result" id="formula-result"></div>
+  <button class="clear-formula" onclick="clearFormula()">↩ Clear</button>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-top:1.25rem;">
+    <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">What Each Letter Means</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;font-size:0.82rem;">
+      <div><span style="color:var(--accent);font-weight:700">C</span> — Consumption (households)</div>
+      <div><span style="color:var(--accent);font-weight:700">I</span> — Investment (businesses)</div>
+      <div><span style="color:var(--accent);font-weight:700">G</span> — Government Spending</div>
+      <div><span style="color:var(--accent);font-weight:700">X−M</span> — Net Exports</div>
+    </div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="flash-game" id="flash-game">
+  <div class="sec-title">⚡ Key Terms</div>
+  <div class="sec-desc">Click a card to flip it. Cards are in random order each time.</div>
+  <p style="text-align:center;font-size:0.75rem;color:var(--muted);margin-bottom:1rem;">👆 Click the card to flip</p>
+  <div class="card-wrap" onclick="flipCard()">
+    <div class="card-inner" id="ci">
+      <div class="card-face card-front"><div><div class="card-tag">Term</div><div class="card-term" id="ct-term">—</div></div></div>
+      <div class="card-face card-back"><div><div class="card-tag">Definition</div><div class="card-def" id="ct-def">—</div></div></div>
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="nav-btn" onclick="prevCard()">←</button>
+    <span class="card-progress" id="cp">1 / 8</span>
+    <button class="nav-btn" onclick="nextCard()">→</button>
+  </div>
+</div>
+
+<!-- MC QUIZ -->
+<div class="mc-game" id="mc-game">
+  <div class="sec-title">🎯 Quick Quiz</div>
+  <div class="sec-desc">5 questions in random order. Instant feedback.</div>
+  <div id="mc-qs"></div>
+  <div class="qz-done" id="qz-done">
+    <div style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">Your Score</div>
+    <div class="big-score" id="fin-sc">5/5</div>
+    <div style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem" id="fin-msg"></div>
+    <button class="restart-btn" onclick="restartQuiz()">Play Again</button>
+  </div>
+</div>
+
+</div>
+<script>
+/* ── SHUFFLE ── */
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
+
+/* ── SCORE ── */
+var gC=0,gW=0,gS=0;
+function addScore(ok){if(ok){gC++;gS++;}else{gW++;gS=0;}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS;}
+function sw(m){['sort','formula','flash','mc'].forEach(function(id){document.getElementById(id+'-game').classList.remove('active');});document.getElementById(m+'-game').classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',['sort','formula','flash','mc'][i]===m);});}
+
+/* ── GDP SORT ── */
+var sortAllItems=[
+  {id:'i1',label:'New school built in Chula Vista',ans:'counts'},
+  {id:'i2',label:'iPhone sold at South Bay mall',ans:'counts'},
+  {id:'i3',label:'Road construction in Logan Heights',ans:'counts'},
+  {id:'i4',label:'US military equipment purchase',ans:'counts'},
+  {id:'i5',label:'California exports shipped to Mexico',ans:'counts'},
+  {id:'i6',label:'Grandmother babysitting for free',ans:'not'},
+  {id:'i7',label:'Cash-paid tamale vendor on the street',ans:'not'},
+  {id:'i8',label:'Car fixed off the books for a neighbor',ans:'not'},
+  {id:'i9',label:'Unpaid caregiving at home',ans:'not'},
+  {id:'i10',label:'Produce sold for cash at swap meet',ans:'not'},
+];
+var sortSel=null;
+var sortPlaced={counts:[],not:[]};
+
+function initSort(){
+  sortSel=null;sortPlaced={counts:[],not:[]};
+  var shuffled=shuffle(sortAllItems);
+  var pool=document.getElementById('sort-pool');pool.innerHTML='';
+  shuffled.forEach(function(item){
+    var d=document.createElement('div');d.className='sort-chip';d.id='schi-'+item.id;
+    d.textContent=item.label;
+    d.onclick=function(){pickSortItem(item.id);};
+    pool.appendChild(d);
+  });
+  document.getElementById('sz-counts').innerHTML='';
+  document.getElementById('sz-not').innerHTML='';
+  document.getElementById('sort-sel-display').textContent='none — click an item first';
+  document.getElementById('sort-sel-display').style.color='var(--muted)';
+}
+
+function pickSortItem(id){
+  if(sortSel===id){sortSel=null;document.querySelectorAll('.sort-chip').forEach(function(c){c.classList.remove('sc-selected');});document.getElementById('sort-sel-display').textContent='none — click an item first';document.getElementById('sort-sel-display').style.color='var(--muted)';return;}
+  document.querySelectorAll('.sort-chip').forEach(function(c){c.classList.remove('sc-selected');});
+  document.getElementById('schi-'+id).classList.add('sc-selected');
+  sortSel=id;
+  var item=sortAllItems.find(function(x){return x.id===id;});
+  document.getElementById('sort-sel-display').textContent='"'+item.label+'" — now click a column';
+  document.getElementById('sort-sel-display').style.color='var(--accent)';
+}
+
+function placeItem(zone){
+  if(!sortSel)return;
+  var item=sortAllItems.find(function(x){return x.id===sortSel;});
+  ['counts','not'].forEach(function(z){
+    var idx=sortPlaced[z].indexOf(sortSel);
+    if(idx>-1){sortPlaced[z].splice(idx,1);var el=document.getElementById('psi-'+sortSel);if(el)el.remove();}
+  });
+  sortPlaced[zone].push(sortSel);
+  var zone_el=document.getElementById('sz-'+zone);
+  var d=document.createElement('div');d.className='placed-chip';d.id='psi-'+sortSel;d.textContent=item.label;
+  (function(sid,z){d.onclick=function(e){e.stopPropagation();var idx2=sortPlaced[z].indexOf(sid);if(idx2>-1){sortPlaced[z].splice(idx2,1);var el2=document.getElementById('psi-'+sid);if(el2)el2.remove();document.getElementById('schi-'+sid).classList.remove('sc-used');}};} )(sortSel,zone);
+  zone_el.appendChild(d);
+  document.getElementById('schi-'+sortSel).classList.add('sc-used');
+  document.getElementById('schi-'+sortSel).classList.remove('sc-selected');
+  sortSel=null;
+  document.getElementById('sort-sel-display').textContent='none — click an item first';
+  document.getElementById('sort-sel-display').style.color='var(--muted)';
+}
+
+function checkSort(){
+  var all=sortAllItems.every(function(item){return['counts','not'].some(function(z){return sortPlaced[z].indexOf(item.id)>-1;});});
+  if(!all){document.getElementById('sort-fb').innerHTML='<div style="color:var(--accent2);text-align:center;margin-top:0.5rem;font-size:0.85rem">⚠️ Place all items before checking!</div>';return;}
+  var html='';var num=0;
+  sortAllItems.forEach(function(item){
+    var placed=['counts','not'].find(function(z){return sortPlaced[z].indexOf(item.id)>-1;});
+    var ok=placed===item.ans;if(ok)num++;
+    html+='<div class="result-row '+(ok?'ok':'bad')+'">'+(ok?'✅':'❌')+' '+item.label+'</div>';
+  });
+  document.getElementById('sort-fb').innerHTML=html;
+  addScore(num===sortAllItems.length);
+  document.getElementById('sort-rb').style.display='block';
+}
+function resetSort(){document.getElementById('sort-fb').innerHTML='';document.getElementById('sort-rb').style.display='none';initSort();}
+
+/* ── FORMULA BUILDER ── */
+// Pieces with a stable key and display label
+var formulaPieces=[
+  {key:'GDP',label:'GDP'},
+  {key:'=',label:'='},
+  {key:'C',label:'C'},
+  {key:'+1',label:'+'},
+  {key:'I',label:'I'},
+  {key:'+2',label:'+'},
+  {key:'G',label:'G'},
+  {key:'+3',label:'+'},
+  {key:'(X−M)',label:'(X−M)'},
+];
+var correctOrder=['GDP','=','C','+1','I','+2','G','+3','(X−M)'];
+var currentFormula=[];
+var fpUsed={};
+var shuffledPieces=[];
+
+function initFormula(){
+  currentFormula=[];fpUsed={};
+  shuffledPieces=shuffle(formulaPieces);
+  renderFormula();
+}
+
+function renderFormula(){
+  var display=document.getElementById('formula-display');
+  var pWrap=document.getElementById('formula-pieces');
+  document.getElementById('formula-result').textContent='';
+  document.getElementById('formula-result').className='formula-result';
+  if(currentFormula.length===0){
+    display.innerHTML='<span style="color:var(--muted);font-size:1rem;font-weight:400">Click pieces below to build the formula</span>';
+  }else{
+    display.innerHTML=currentFormula.map(function(k){
+      var p=formulaPieces.find(function(x){return x.key===k;});
+      return'<span style="color:var(--accent)">'+p.label+'</span>';
+    }).join(' ');
+  }
+  pWrap.innerHTML='';
+  shuffledPieces.forEach(function(p){
+    var btn=document.createElement('button');
+    btn.className='formula-piece-btn'+(fpUsed[p.key]?' fp-used':'');
+    btn.textContent=p.label;
+    btn.onclick=function(){addPiece(p.key);};
+    pWrap.appendChild(btn);
+  });
+}
+
+function addPiece(key){
+  if(fpUsed[key])return;
+  currentFormula.push(key);fpUsed[key]=true;
+  renderFormula();
+  if(currentFormula.length===correctOrder.length){
+    var ok=JSON.stringify(currentFormula)===JSON.stringify(correctOrder);
+    var r=document.getElementById('formula-result');
+    if(ok){r.textContent='🎉 Perfect! GDP = C + I + G + (X − M)';r.className='formula-result ok';addScore(true);}
+    else{r.textContent='❌ Not quite — try again!';r.className='formula-result bad';addScore(false);setTimeout(clearFormula,1800);}
+  }
+}
+
+function clearFormula(){currentFormula=[];fpUsed={};renderFormula();}
+
+/* ── FLASHCARDS ── */
+var cardData=[
+  {t:'Macroeconomics',d:'The study of the economy as a whole — including output, employment, and growth.'},
+  {t:'GDP',d:'Total market value of all finished goods and services produced within a country in a given time period. Formula: C + I + G + (X−M).'},
+  {t:'Consumption',d:'Household spending on goods and services — the single largest component of GDP.'},
+  {t:'Investment',d:'Business spending on capital goods like equipment and structures used to produce future output.'},
+  {t:'Government Spending',d:'Federal, state, and local spending on public goods and services — roads, military, public school teachers.'},
+  {t:'Net Exports',d:'Exports minus imports. Positive when a nation sells more abroad than it buys.'},
+  {t:'Informal Economy',d:'Economic activity not tracked, taxed, or counted in GDP — disproportionately common in low-income communities.'},
+  {t:'Per Capita GDP',d:'Total GDP divided by total population. Used to compare living standards but masks wealth inequality.'},
+];
+var shuffledCards=[];
+var cI=0,cF=false;
+
+function initCards(){shuffledCards=shuffle(cardData);cI=0;cF=false;renderCard();}
+function renderCard(){document.getElementById('ct-term').textContent=shuffledCards[cI].t;document.getElementById('ct-def').textContent=shuffledCards[cI].d;document.getElementById('cp').textContent=(cI+1)+' / '+shuffledCards.length;document.getElementById('ci').classList.remove('flipped');cF=false;}
+function flipCard(){cF=!cF;document.getElementById('ci').classList.toggle('flipped',cF);}
+function nextCard(){cI=(cI+1)%shuffledCards.length;renderCard();}
+function prevCard(){cI=(cI-1+shuffledCards.length)%shuffledCards.length;renderCard();}
+
+/* ── MC QUIZ ── */
+var mcAllQ=[
+  {s:'A tamale vendor in National City sells food every weekend for cash. Is this counted in GDP?',c:['No — it\'s part of the informal economy','Yes — all food sales count toward GDP','Yes — any paid work counts'],a:0,f:'Cash-based informal work is not counted. This is one of GDP\'s biggest blind spots.'},
+  {s:'The U.S. government pays workers to build a highway through Logan Heights. Which GDP component is this?',c:['Government Spending (G)','Consumption (C)','Investment (I)'],a:0,f:'Government Spending (G) covers federal, state, and local infrastructure like roads and schools.'},
+  {s:'Per capita GDP divides total GDP by the entire population. What problem does this create?',c:['It hides how unequally wealth is distributed','It makes GDP look smaller than it really is','It counts informal economy workers'],a:0,f:'Simon Kuznets — who invented GDP — warned in 1934 it should never be used to measure how well people are actually living.'},
+  {s:'Two-thirds of U.S. GDP comes from which component?',c:['Consumption (C)','Government Spending (G)','Net Exports (X−M)'],a:0,f:'Consumption — households buying goods and services — dominates U.S. GDP.'},
+  {s:'California exports $500M to Japan but imports $800M in electronics. What is California\'s net export contribution to GDP?',c:['Negative $300M','Positive $1.3 billion','Exactly zero'],a:0,f:'Net Exports = Exports − Imports = $500M − $800M = −$300M. This subtracts from GDP.'},
+  {s:'A grandmother babysits her grandchildren every day for free. Is this counted in GDP?',c:['No — unpaid work is invisible to GDP','Yes — all labor is counted','Yes — childcare always counts'],a:0,f:'GDP only counts paid market transactions. Unpaid household work is one of its biggest blind spots.'},
+  {s:'Which of the following is an example of Investment (I) in the GDP formula?',c:['A factory buys new equipment in Otay Mesa','A family buys groceries at Walmart','The city pays teachers\' salaries'],a:0,f:'Investment is business spending on capital goods — equipment, machinery, and structures used to produce future output.'},
+];
+var shuffledQ=[];
+var mcAns=[],mcSc=0;
+
+function initQuiz(){
+  shuffledQ=shuffle(mcAllQ).slice(0,5);
+  mcAns=new Array(shuffledQ.length).fill(false);mcSc=0;
+  var c=document.getElementById('mc-qs');c.innerHTML='';
+  document.getElementById('qz-done').classList.remove('show');
+  shuffledQ.forEach(function(q,qi){
+    // shuffle the choices but track correct answer
+    var choiceIdxs=shuffle([0,1,2]);
+    var newChoices=choiceIdxs.map(function(i){return q.c[i];});
+    var newCorrect=choiceIdxs.indexOf(q.a);
+    var card=document.createElement('div');card.className='q-card';card.id='q'+qi;
+    card.innerHTML='<div class="q-num">Question '+(qi+1)+' of '+shuffledQ.length+'</div><div class="q-stem">'+q.s+'</div><div class="choices">'+newChoices.map(function(ch,ci){return'<button class="ch-btn" onclick="ansQ('+qi+','+ci+','+newCorrect+')">'+String.fromCharCode(65+ci)+'. '+ch+'</button>';}).join('')+'</div><div class="feedback" id="fb'+qi+'"></div><button class="next-btn" id="nb'+qi+'" onclick="nxt('+qi+')">'+(qi<shuffledQ.length-1?'Next Question →':'See My Score')+'</button>';
+    c.appendChild(card);if(qi>0)card.style.display='none';
+  });
+}
+
+function ansQ(qi,ci,correct){
+  if(mcAns[qi])return;mcAns[qi]=true;
+  var q=shuffledQ[qi];var ok=ci===correct;if(ok)mcSc++;addScore(ok);
+  document.getElementById('q'+qi).querySelectorAll('.ch-btn').forEach(function(b,i){b.disabled=true;if(i===correct)b.classList.add('correct');else if(i===ci&&!ok)b.classList.add('wrong');});
+  var fb=document.getElementById('fb'+qi);fb.textContent=(ok?'✅ Correct! ':'❌ Not quite. ')+q.f;fb.className='feedback show '+(ok?'correct':'wrong');
+  document.getElementById('nb'+qi).classList.add('show');
+}
+function nxt(qi){
+  if(qi<shuffledQ.length-1){var n=document.getElementById('q'+(qi+1));n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'start'});}
+  else{var d=document.getElementById('qz-done');d.classList.add('show');document.getElementById('fin-sc').textContent=mcSc+'/'+shuffledQ.length;document.getElementById('fin-msg').textContent=['Keep grinding — review the terms.','Getting there!','Solid work!','Almost perfect!','Perfect score! GDP locked. 🔒'][mcSc-1]||'';d.scrollIntoView({behavior:'smooth'});}
+}
+function restartQuiz(){initQuiz();}
+
+/* ── INIT ── */
+initSort();initFormula();initCards();initQuiz();
+</script>
+</body>
+</html>
