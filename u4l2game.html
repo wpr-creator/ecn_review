@@ -53,7 +53,16 @@ h1 em{color:var(--accent);font-style:normal}
 .ch-btn:hover:not(:disabled){border-color:var(--accent2);background:rgba(29,111,164,.06)}
 .ch-btn.correct{background:rgba(45,158,68,.12);border-color:var(--correct);color:var(--correct)}.ch-btn.wrong{background:rgba(192,57,43,.1);border-color:var(--warn);color:var(--warn)}
 .feedback{margin-top:.75rem;font-size:.82rem;padding:.7rem 1rem;border-radius:10px;font-weight:700;display:none;line-height:1.5}.feedback.show{display:block}.feedback.correct{background:rgba(45,158,68,.1);color:var(--correct)}.feedback.wrong{background:rgba(192,57,43,.08);color:var(--warn)}
-.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin:1.5rem 0}.results-mini{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:1rem;text-align:center}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin:1.5rem 0}
+.testprep-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:1rem;margin:1rem 0;text-align:left}
+.testprep-card h3{font-family:Syne,sans-serif;font-size:1.25rem;color:var(--accent);margin-bottom:.4rem}
+.testprep-q{border-top:1px solid var(--border);padding-top:.75rem;margin-top:.75rem}
+.testprep-q p{font-weight:800;font-size:.9rem;margin-bottom:.45rem}
+.testprep-choices{display:flex;flex-wrap:wrap;gap:.45rem}
+.testprep-choices button{background:var(--card);border:2px solid var(--border);border-radius:999px;padding:.45rem .7rem;font-family:Nunito,sans-serif;font-size:.8rem;font-weight:800;cursor:pointer}
+.testprep-choices button.correct{background:rgba(45,158,68,.12);border-color:var(--correct);color:var(--correct)}
+.testprep-choices button.wrong{background:rgba(192,57,43,.10);border-color:var(--warn);color:var(--warn)}
+.testprep-status{text-align:center;font-weight:800;font-size:.85rem;margin-top:.8rem}.results-mini{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:1rem;text-align:center}
 .results-title{font-family:Syne,sans-serif;font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:.75rem}
 .card-wrap{perspective:1000px;width:100%;max-width:560px;margin:0 auto 1.5rem;height:220px;cursor:pointer}.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:.5s}.card-inner.flipped{transform:rotateY(180deg)}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}.card-front{background:var(--card);border:2px solid var(--border);box-shadow:var(--shadow)}.card-back{background:var(--ink);border:2px solid var(--ink);transform:rotateY(180deg)}
@@ -122,6 +131,13 @@ h1 em{color:var(--accent);font-style:normal}
 <div class="results-card"><div class="results-title">Checkpoint Complete</div><p style="color:var(--muted);line-height:1.55">You practiced identifying phases, sequencing the cycle, and predicting what comes next.</p>
 <div class="results-grid"><div class="results-mini"><h3 id="res-cycle">Activity 1</h3><p>Label the Business Cycle</p></div><div class="results-mini"><h3 id="res-sort">Activity 2</h3><p>Phase Sorter</p></div><div class="results-mini"><h3 id="res-predict">Activity 3</h3><p>Predict the Cycle</p></div></div>
 <div style="font-family:Syne,sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);margin-bottom:1rem">Correct: <span id="final-c">0</span> · Wrong: <span id="final-w">0</span></div>
+<div class="testprep-card">
+<h3>Final Test-Style Check</h3>
+<div class="testprep-q"><p>1. A recession is officially declared after how many quarters of negative GDP?</p><div class="testprep-choices"><button onclick="bcPrepAns(0,this,true)">Two</button><button onclick="bcPrepAns(0,this,false)">One</button><button onclick="bcPrepAns(0,this,false)">Four</button></div></div>
+<div class="testprep-q"><p>2. The lowest point before recovery begins is called what?</p><div class="testprep-choices"><button onclick="bcPrepAns(1,this,false)">Peak</button><button onclick="bcPrepAns(1,this,true)">Trough</button><button onclick="bcPrepAns(1,this,false)">Expansion</button></div></div>
+<div class="testprep-q"><p>3. Stock prices and building permits that shift before GDP are called what?</p><div class="testprep-choices"><button onclick="bcPrepAns(2,this,true)">Leading indicators</button><button onclick="bcPrepAns(2,this,false)">Deficit signals</button><button onclick="bcPrepAns(2,this,false)">Fiscal policies</button></div></div>
+<div class="testprep-status" id="bc-testprep-status">Complete this final check to unlock review tools.</div>
+</div>
 <button class="check-btn" onclick="unlockReviewTools()">Unlock Flashcards + Quiz</button></div>
 </div>
 
@@ -139,11 +155,23 @@ h1 em{color:var(--accent);font-style:normal}
 <script>
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t}return b}
 var gC=0,gW=0,gS=0;function addScore(ok){if(ok){gC++;gS++}else{gW++;gS=0}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS}
-var coreComplete={cycle:false,sort:false,predict:false},reviewUnlocked=false,predictAnswered=[false,false,false,false];
+var coreComplete={cycle:false,sort:false,predict:false},reviewUnlocked=false,predictAnswered=[false,false,false,false],testPrepDone=false,bcPrepAnswered=[false,false,false];
 function updateResultsScreen(){var fc=document.getElementById('final-c'),fw=document.getElementById('final-w');if(fc)fc.textContent=gC;if(fw)fw.textContent=gW;document.getElementById('res-cycle').textContent=(coreComplete.cycle?'✅ ':'⬜ ')+'Activity 1';document.getElementById('res-sort').textContent=(coreComplete.sort?'✅ ':'⬜ ')+'Activity 2';document.getElementById('res-predict').textContent=(coreComplete.predict?'✅ ':'⬜ ')+'Activity 3'}
 function sw(m){if((m==='flash'||m==='mc')&&!reviewUnlocked)m='results';['cycle','sort','predict','results','flash','mc'].forEach(function(id){var el=document.getElementById(id+'-game');if(el)el.classList.remove('active')});var t=document.getElementById(m+'-game');if(t)t.classList.add('active');updateResultsScreen();var order=['cycle','sort','predict','results','flash','mc'];document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',order[i]===m)})}
 function markCore(n){coreComplete[n]=true;updateResultsScreen();if(coreComplete.cycle&&coreComplete.sort&&coreComplete.predict)setTimeout(function(){sw('results')},500)}
-function unlockReviewTools(){reviewUnlocked=true;document.getElementById('flash-tab').classList.remove('locked');document.getElementById('mc-tab').classList.remove('locked');sw('flash')}
+function bcPrepAns(i,btn,correct){
+  if(bcPrepAnswered[i])return;
+  bcPrepAnswered[i]=true;
+  btn.classList.add(correct?'correct':'wrong');
+  Array.from(btn.parentElement.querySelectorAll('button')).forEach(function(b){b.disabled=true});
+  addScore(correct);
+  if(bcPrepAnswered.every(Boolean)){
+    testPrepDone=true;
+    var s=document.getElementById('bc-testprep-status');
+    if(s){s.textContent='✅ Final check complete. Flashcards and quiz are ready.';s.style.color='var(--correct)';}
+  }
+}
+function unlockReviewTools(){if(!testPrepDone){sw('results');return;}reviewUnlocked=true;document.getElementById('flash-tab').classList.remove('locked');document.getElementById('mc-tab').classList.remove('locked');sw('flash')}
 
 var CYC_ANS={1:'Expansion',2:'Peak',3:'Contraction',4:'Trough',5:'Recovery'},cycSel=null,cycPlaced={};
 function initCycle(){cycSel=null;cycPlaced={};var pool=document.getElementById('label-pool');pool.innerHTML='';shuffle(['Expansion','Peak','Contraction','Trough','Recovery']).forEach(function(term){var d=document.createElement('div');d.className='label-chip';d.textContent=term;d.dataset.term=term;d.draggable=true;d.ondragstart=function(e){e.dataTransfer.setData('text/plain',term);e.dataTransfer.setData('source','cycle')};d.onclick=function(){selectCycleTerm(term,d)};pool.appendChild(d)});[1,2,3,4,5].forEach(function(n){document.getElementById('cz'+n).className='czone';document.getElementById('ca'+n).textContent=''})}
