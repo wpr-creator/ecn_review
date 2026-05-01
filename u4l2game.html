@@ -6,487 +6,174 @@
 <title>The Boom and The Bust</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#fdf6ec;--surface:#fff8f0;--card:#ffffff;--ink:#1a1206;--muted:#6b5c48;--accent:#e85d04;--accent2:#1d6fa4;--correct:#2d9e44;--warn:#c0392b;--border:rgba(0,0,0,0.10);--shadow:0 2px 16px rgba(0,0,0,0.08);}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--ink);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(232,93,4,0.07) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
-  header{background:var(--ink);color:#fff;padding:2rem 2rem 1.75rem;text-align:center;position:relative;overflow:hidden;}
-  header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%);}
-  .eyebrow{font-weight:700;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;line-height:0.95;color:#fff;}
-  h1 em{color:var(--accent);font-style:normal;}
-  .subtitle{margin-top:0.5rem;color:rgba(255,255,255,0.55);font-size:0.85rem;}
-  .score-bar{display:flex;justify-content:center;gap:2rem;padding:1rem 2rem;background:var(--card);border-bottom:1px solid var(--border);margin-bottom:2rem;}
-  .stat{text-align:center;}
-  .sv{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;}
-  .sv.green{color:var(--correct);}.sv.orange{color:var(--accent);}.sv.blue{color:var(--accent2);}
-  .slbl{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);}
-  .mode-tabs{display:flex;justify-content:center;gap:0.5rem;padding:0 2rem 1.5rem;flex-wrap:wrap;}
-  .tab-btn{background:var(--card);border:2px solid var(--border);color:var(--muted);padding:0.5rem 1.25rem;border-radius:999px;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-  .tab-btn.active,.tab-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
-  .game-area{max-width:860px;margin:0 auto;padding:0 1.5rem 4rem;}
-  .sec-title{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:0.25rem;color:var(--ink);}
-  .sec-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
-  .check-btn{display:block;margin:1rem auto;background:var(--accent);color:#fff;border:none;padding:0.75rem 2.5rem;border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s;}
-  .check-btn:hover{transform:scale(1.04);}
-  .hint-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--muted);text-align:center;margin-bottom:1rem;}
-  .hint-bar strong{color:var(--accent);}
-  .cycle-game{display:none;}.cycle-game.active{display:block;}
-  .svg-wrap{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);text-align:center;}
-  .label-pool{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:1.25rem;}
-  .label-chip{background:var(--card);border:2px solid var(--border);color:var(--ink);padding:0.55rem 1.1rem;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:grab;transition:all 0.18s;user-select:none;}
-  .label-chip:hover:not(.lc-used){border-color:var(--accent);color:var(--accent);}
-  .label-chip.lc-selected{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.06);}
-  .label-chip.lc-used{opacity:0.28;pointer-events:none;}
-  .cycle-zones{display:grid;grid-template-columns:repeat(5,1fr);gap:0.6rem;margin-bottom:0.75rem;}
-  .czone{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:0.65rem 0.35rem 0.75rem;text-align:center;cursor:pointer;transition:all 0.18s;min-height:100px;display:flex;flex-direction:column;align-items:center;gap:0.2rem;}
-  .czone:hover,.czone.drag-over{border-color:var(--accent);background:rgba(232,93,4,0.06);transform:translateY(-2px);}
-  .czone.cz-filled{border-style:solid;border-color:var(--accent2);background:rgba(29,111,164,0.04);}
-  .czone.cz-correct{border-color:var(--correct)!important;background:rgba(45,158,68,0.08)!important;}
-  .czone.cz-wrong{border-color:var(--warn)!important;background:rgba(192,57,43,0.07)!important;}
-  .cz-num{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--muted);line-height:1;}
-  .cz-clue{font-size:0.68rem;color:var(--muted);line-height:1.3;padding:0 0.15rem;}
-  .cz-answer{font-weight:800;font-size:0.82rem;color:var(--accent2);min-height:1.1rem;line-height:1.2;}
-  .sort-game{display:none;}.sort-game.active{display:block;}
-
-  .predict-game{display:none;}.predict-game.active{display:block;}
-  .results-game{display:none;}.results-game.active{display:block;}
-  .tab-btn.locked{opacity:0.45;cursor:not-allowed;filter:grayscale(0.35);}
-  .predict-grid{display:grid;gap:1rem;}
-  .predict-complete-card{
-    background:var(--card);
-    border:2px solid var(--border);
-    border-radius:16px;
-    padding:1.75rem;
-    box-shadow:var(--shadow);
-    text-align:center;
-  }
-  .results-card{
-    background:var(--card);
-    border:2px solid var(--border);
-    border-radius:18px;
-    padding:2rem;
-    text-align:center;
-    box-shadow:var(--shadow);
-  }
-  .results-title{
-    font-family:'Syne',sans-serif;
-    font-size:2.6rem;
-    font-weight:800;
-    line-height:1;
-    margin-bottom:0.75rem;
-    color:var(--ink);
-  }
-  .results-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-    gap:1rem;
-    margin:1.5rem 0;
-  }
-  .results-mini{
-    background:var(--surface);
-    border:2px solid var(--border);
-    border-radius:14px;
-    padding:1rem;
-  }
-  .results-mini h3{
-    font-family:'Syne',sans-serif;
-    font-size:1.1rem;
-    font-weight:800;
-    margin-bottom:0.35rem;
-    color:var(--accent2);
-  }
-  .results-mini p{
-    color:var(--muted);
-    font-size:0.82rem;
-    line-height:1.45;
-  }
-  .unlock-row{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;}
-
-  .ev-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
-  .ev-chip{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:0.85rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:grab;transition:all 0.18s;line-height:1.4;box-shadow:var(--shadow);display:flex;align-items:center;gap:0.7rem;}
-  .ev-chip:hover:not(.ev-used){border-color:var(--accent2);}
-  .ev-chip.ev-sel{border-color:var(--accent);background:rgba(232,93,4,0.06);}
-  .ev-chip.ev-used{opacity:0.3;pointer-events:none;}
-  .ev-icon{font-size:1.1rem;flex-shrink:0;}
-  .slot-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;}
-  .ev-slot{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:0.75rem 1.1rem;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:1rem;min-height:58px;}
-  .ev-slot:hover,.ev-slot.drag-over{border-color:var(--accent);background:rgba(232,93,4,0.06);transform:translateY(-2px);}
-  .ev-slot.es-filled{border-style:solid;border-color:var(--accent2);background:rgba(29,111,164,0.04);}
-  .ev-slot.es-correct{border-color:var(--correct)!important;background:rgba(45,158,68,0.07)!important;}
-  .ev-slot.es-wrong{border-color:var(--warn)!important;background:rgba(192,57,43,0.07)!important;}
-  .es-num{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--muted);min-width:1.6rem;line-height:1;}
-  .es-text{font-size:0.85rem;font-weight:700;color:var(--ink);}
-  .es-empty{font-size:0.82rem;color:var(--muted);font-style:italic;font-weight:400;}
-  .flash-game{display:none;}.flash-game.active{display:block;}
-  .card-wrap{perspective:1000px;width:100%;max-width:560px;margin:0 auto 1.5rem;height:220px;cursor:pointer;}
-  .card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s;}
-  .card-inner.flipped{transform:rotateY(180deg);}
-  .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;}
-  .card-front{background:var(--card);border:2px solid var(--border);box-shadow:var(--shadow);}
-  .card-back{background:var(--ink);border:2px solid var(--ink);transform:rotateY(180deg);}
-  .card-term{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--ink);}
-  .card-back .card-term{color:#fff;}
-  .card-tag{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
-  .card-back .card-tag{color:var(--accent);}
-  .card-def{font-size:0.9rem;line-height:1.5;color:rgba(255,255,255,0.9);}
-  .card-nav{display:flex;justify-content:center;align-items:center;gap:1.5rem;margin-bottom:1rem;}
-  .nav-btn{background:var(--card);border:2px solid var(--border);color:var(--ink);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
-  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .card-progress{color:var(--muted);font-size:0.8rem;}
-  .mc-game{display:none;}.mc-game.active{display:block;}
-  .q-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
-  .q-num{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
-  .q-stem{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:1.25rem;color:var(--ink);}
-  .choices{display:flex;flex-direction:column;gap:0.5rem;}
-  .ch-btn{background:var(--surface);border:2px solid var(--border);color:var(--ink);padding:0.75rem 1rem;border-radius:10px;text-align:left;font-family:'Nunito',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-weight:600;}
-  .ch-btn:hover:not(:disabled){border-color:var(--accent2);background:rgba(29,111,164,0.06);}
-  .ch-btn.correct{background:rgba(45,158,68,0.12);border-color:var(--correct);color:var(--correct);}
-  .ch-btn.wrong{background:rgba(192,57,43,0.1);border-color:var(--warn);color:var(--warn);}
-  .feedback{margin-top:0.75rem;font-size:0.82rem;padding:0.7rem 1rem;border-radius:10px;font-weight:700;display:none;line-height:1.5;}
-  .feedback.show{display:block;}
-  .feedback.correct{background:rgba(45,158,68,0.1);color:var(--correct);}
-  .feedback.wrong{background:rgba(192,57,43,0.08);color:var(--warn);}
-  .next-btn{margin-top:1rem;background:var(--accent);color:#fff;border:none;padding:0.6rem 1.75rem;border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;display:none;transition:all 0.2s;}
-  .next-btn.show{display:inline-block;}
-  .next-btn:hover{transform:scale(1.04);}
-  .qz-done{text-align:center;padding:3rem 1rem;display:none;}
-  .qz-done.show{display:block;}
-  .big-score{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--accent);line-height:1;}
-  .restart-btn{margin-top:1.5rem;background:var(--ink);color:#fff;border:none;padding:0.75rem 2.5rem;border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s;}
-  .restart-btn:hover{transform:scale(1.04);}
-  @media(max-width:560px){.cycle-zones{grid-template-columns:repeat(3,1fr);}}
+:root{--bg:#fdf6ec;--surface:#fff8f0;--card:#fff;--ink:#1a1206;--muted:#6b5c48;--accent:#e85d04;--accent2:#1d6fa4;--correct:#2d9e44;--warn:#c0392b;--border:rgba(0,0,0,.10);--shadow:0 2px 16px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Nunito,sans-serif;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle,rgba(232,93,4,.07) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+header{background:var(--ink);color:#fff;padding:2rem 2rem 1.75rem;text-align:center;position:relative;overflow:hidden}
+header:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%)}
+.eyebrow{font-weight:700;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h1{font-family:Syne,sans-serif;font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;line-height:.95;color:#fff}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{margin-top:.5rem;color:rgba(255,255,255,.55);font-size:.85rem}
+.score-bar{display:flex;justify-content:center;gap:2rem;padding:1rem 2rem;background:var(--card);border-bottom:1px solid var(--border);margin-bottom:2rem}
+.stat{text-align:center}.sv{font-family:Syne,sans-serif;font-size:2rem;font-weight:800;line-height:1}.green{color:var(--correct)}.orange{color:var(--accent)}.blue{color:var(--accent2)}
+.slbl{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.mode-tabs{display:flex;justify-content:center;gap:.5rem;padding:0 2rem 1.5rem;flex-wrap:wrap}
+.tab-btn{background:var(--card);border:2px solid var(--border);color:var(--muted);padding:.5rem 1.25rem;border-radius:999px;font-family:Nunito,sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s}
+.tab-btn.active,.tab-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-btn.locked{opacity:.45;filter:grayscale(.35)}
+.game-area{max-width:860px;margin:0 auto;padding:0 1.5rem 4rem}
+.sec-title{font-family:Syne,sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:.25rem}
+.sec-desc{font-size:.82rem;color:var(--muted);margin-bottom:1.5rem}
+.check-btn,.restart-btn{display:block;margin:1rem auto;background:var(--accent);color:#fff;border:0;padding:.75rem 2.5rem;border-radius:999px;font-family:Nunito,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:.2s}
+.check-btn:hover,.restart-btn:hover{transform:scale(1.04)}
+.hint-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem 1rem;font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:1rem}.hint-bar strong{color:var(--accent)}
+.cycle-game,.sort-game,.predict-game,.results-game,.flash-game,.mc-game{display:none}.active{display:block}
+.svg-wrap,.q-card,.results-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.label-pool,.ev-list{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.25rem}
+.ev-list{flex-direction:column}
+.label-chip,.ev-chip{background:var(--card);border:2px solid var(--border);color:var(--ink);padding:.75rem 1.1rem;border-radius:10px;font-weight:700;font-size:.85rem;cursor:grab;transition:.18s;user-select:none;box-shadow:var(--shadow)}
+.label-chip:hover:not(.used),.ev-chip:hover:not(.used){border-color:var(--accent);color:var(--accent)}
+.used{opacity:.28;pointer-events:none}
+.selected{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;transform:scale(1.04)}
+.cycle-zones{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:.75rem}
+.czone,.ev-slot{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:.75rem;text-align:center;cursor:pointer;transition:.18s;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem}
+.ev-slot{min-height:62px;flex-direction:row;text-align:left;justify-content:flex-start}
+.czone:hover,.czone.drag-over,.ev-slot:hover,.ev-slot.drag-over{border-color:var(--accent);background:rgba(232,93,4,.06);transform:translateY(-2px)}
+.filled{border-style:solid;border-color:var(--accent2);background:rgba(29,111,164,.04)}
+.correct-zone{border-color:var(--correct)!important;background:rgba(45,158,68,.08)!important}
+.wrong-zone{border-color:var(--warn)!important;background:rgba(192,57,43,.07)!important}
+.cz-num,.es-num{font-family:Syne,sans-serif;font-size:1.1rem;font-weight:800;color:var(--muted)}
+.es-num{font-size:1.5rem;min-width:1.6rem}.cz-clue{font-size:.68rem;color:var(--muted);line-height:1.3}.cz-answer,.es-text{font-weight:800;font-size:.82rem;color:var(--accent2);line-height:1.2}
+.slot-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}.ev-icon{font-size:1.1rem}.es-empty{font-size:.82rem;color:var(--muted);font-style:italic;font-weight:400}
+.q-num{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+.q-stem{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:1.25rem}
+.choices{display:flex;flex-direction:column;gap:.5rem}.ch-btn{background:var(--surface);border:2px solid var(--border);color:var(--ink);padding:.75rem 1rem;border-radius:10px;text-align:left;font-family:Nunito,sans-serif;font-size:.85rem;cursor:pointer;transition:.2s;font-weight:600}
+.ch-btn:hover:not(:disabled){border-color:var(--accent2);background:rgba(29,111,164,.06)}
+.ch-btn.correct{background:rgba(45,158,68,.12);border-color:var(--correct);color:var(--correct)}.ch-btn.wrong{background:rgba(192,57,43,.1);border-color:var(--warn);color:var(--warn)}
+.feedback{margin-top:.75rem;font-size:.82rem;padding:.7rem 1rem;border-radius:10px;font-weight:700;display:none;line-height:1.5}.feedback.show{display:block}.feedback.correct{background:rgba(45,158,68,.1);color:var(--correct)}.feedback.wrong{background:rgba(192,57,43,.08);color:var(--warn)}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin:1.5rem 0}.results-mini{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:1rem;text-align:center}
+.results-title{font-family:Syne,sans-serif;font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:.75rem}
+.card-wrap{perspective:1000px;width:100%;max-width:560px;margin:0 auto 1.5rem;height:220px;cursor:pointer}.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:.5s}.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}.card-front{background:var(--card);border:2px solid var(--border);box-shadow:var(--shadow)}.card-back{background:var(--ink);border:2px solid var(--ink);transform:rotateY(180deg)}
+.card-term{font-family:Syne,sans-serif;font-size:2.2rem;font-weight:800}.card-back .card-term{color:#fff}.card-tag{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}.card-back .card-tag{color:var(--accent)}.card-def{font-size:.9rem;line-height:1.5;color:rgba(255,255,255,.9)}
+.card-nav{display:flex;justify-content:center;align-items:center;gap:1.5rem}.nav-btn{background:var(--card);border:2px solid var(--border);color:var(--ink);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.qz-done{text-align:center;padding:3rem 1rem;display:none}.qz-done.show{display:block}.big-score{font-family:Syne,sans-serif;font-size:5rem;font-weight:800;color:var(--accent);line-height:1}
+@media(max-width:560px){.cycle-zones{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header>
-  <div class="eyebrow">Unit 4 · Lesson 2 · Economics</div>
-  <h1>THE BOOM<br>& THE <em>BUST</em></h1>
-  <p class="subtitle">The Business Cycle — Growth, Collapse, and Who Absorbs the Fall</p>
-</header>
-<div class="score-bar">
-  <div class="stat"><div class="sv green" id="sc-c">0</div><div class="slbl">Correct</div></div>
-  <div class="stat"><div class="sv orange" id="sc-w">0</div><div class="slbl">Wrong</div></div>
-  <div class="stat"><div class="sv blue" id="sc-s">0</div><div class="slbl">Streak 🔥</div></div>
-</div>
+<header><div class="eyebrow">Unit 4 · Lesson 2 · Economics</div><h1>THE BOOM<br>& THE <em>BUST</em></h1><p class="subtitle">The Business Cycle — Growth, Collapse, and Who Absorbs the Fall</p></header>
+<div class="score-bar"><div class="stat"><div class="sv green" id="sc-c">0</div><div class="slbl">Correct</div></div><div class="stat"><div class="sv orange" id="sc-w">0</div><div class="slbl">Wrong</div></div><div class="stat"><div class="sv blue" id="sc-s">0</div><div class="slbl">Streak 🔥</div></div></div>
 <div class="mode-tabs">
-  <button class="tab-btn active" onclick="sw('cycle')">📈 Label the Cycle</button>
-  <button class="tab-btn" onclick="sw('sort')">🗓️ Phase Sorter</button>
-  <button class="tab-btn" onclick="sw('predict')">🔮 Predict the Cycle</button>
-  <button class="tab-btn" onclick="sw('results')">🏁 Results</button>
-  <button class="tab-btn locked" id="flash-tab" onclick="sw('flash')">⚡ Key Terms</button>
-  <button class="tab-btn locked" id="mc-tab" onclick="sw('mc')">🎯 Quick Quiz</button>
+<button class="tab-btn active" onclick="sw('cycle')">📈 Label the Cycle</button>
+<button class="tab-btn" onclick="sw('sort')">🗓️ Phase Sorter</button>
+<button class="tab-btn" onclick="sw('predict')">🔮 Predict the Cycle</button>
+<button class="tab-btn" onclick="sw('results')">🏁 Results</button>
+<button class="tab-btn locked" id="flash-tab" onclick="sw('flash')">⚡ Key Terms</button>
+<button class="tab-btn locked" id="mc-tab" onclick="sw('mc')">🎯 Quick Quiz</button>
 </div>
+
 <div class="game-area">
 <div class="cycle-game active" id="cycle-game">
-  <div class="sec-title">📈 Label the Business Cycle</div>
-  <div class="sec-desc">Terms are shuffled every load. Drag each term into the matching numbered box. Click-to-place still works too.</div>
-  <div class="svg-wrap">
-    <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
-      <line x1="42" y1="10" x2="42" y2="148" stroke="#c0b090" stroke-width="1.2"/>
-      <line x1="42" y1="148" x2="660" y2="148" stroke="#c0b090" stroke-width="1.2"/>
-      <text x="20" y="80" font-size="9" fill="#8a7560" transform="rotate(-90,20,80)" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="700">GDP</text>
-      <text x="350" y="164" font-size="9" fill="#8a7560" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="700">TIME</text>
-      <path d="M 55 125 C 100 125 130 32 195 32 C 260 32 280 125 345 130 C 368 132 388 148 408 148 C 438 148 468 55 522 55 C 562 55 592 95 642 105" stroke="#e85d04" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <circle cx="120" cy="78" r="12" fill="#e85d04"/><text x="120" y="83" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne,sans-serif">1</text>
-      <circle cx="195" cy="32" r="12" fill="#1d6fa4"/><text x="195" y="37" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne,sans-serif">2</text>
-      <circle cx="278" cy="88" r="12" fill="#e85d04"/><text x="278" y="93" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne,sans-serif">3</text>
-      <circle cx="408" cy="141" r="12" fill="#1d6fa4"/><text x="408" y="146" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne,sans-serif">4</text>
-      <circle cx="490" cy="90" r="12" fill="#e85d04"/><text x="490" y="95" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne,sans-serif">5</text>
-    </svg>
-  </div>
-  <div class="hint-bar"><strong>Drag or Click:</strong> <span id="cyc-sel" style="color:var(--muted)">drag a term into a box, or click one first</span></div>
-  <div class="label-pool" id="label-pool"></div>
-  <div class="cycle-zones">
-    <div class="czone" id="cz1" onclick="dropTerm(1)"><div class="cz-num">①</div><div class="cz-clue">GDP rising, jobs being added</div><div class="cz-answer" id="ca1"></div></div>
-    <div class="czone" id="cz2" onclick="dropTerm(2)"><div class="cz-num">②</div><div class="cz-clue">Highest point before the turn</div><div class="cz-answer" id="ca2"></div></div>
-    <div class="czone" id="cz3" onclick="dropTerm(3)"><div class="cz-num">③</div><div class="cz-clue">GDP shrinking, layoffs begin</div><div class="cz-answer" id="ca3"></div></div>
-    <div class="czone" id="cz4" onclick="dropTerm(4)"><div class="cz-num">④</div><div class="cz-clue">Lowest point, crash stops getting worse</div><div class="cz-answer" id="ca4"></div></div>
-    <div class="czone" id="cz5" onclick="dropTerm(5)"><div class="cz-num">⑤</div><div class="cz-clue">Growth starts again after the bottom</div><div class="cz-answer" id="ca5"></div></div>
-  </div>
-  <button class="check-btn" onclick="checkCycle()">Check My Labels</button>
-  <div id="cycle-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
-  <button class="check-btn" id="cycle-rb" style="display:none;background:var(--accent2)" onclick="resetCycle()">Try Again</button>
+<div class="sec-title">📈 Label the Business Cycle</div><div class="sec-desc">Drag each term into the matching numbered box. Click-to-place still works too.</div>
+<div class="svg-wrap">
+<svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+<line x1="42" y1="10" x2="42" y2="148" stroke="#c0b090" stroke-width="1.2"/><line x1="42" y1="148" x2="660" y2="148" stroke="#c0b090" stroke-width="1.2"/>
+<text x="20" y="80" font-size="9" fill="#8a7560" transform="rotate(-90,20,80)" text-anchor="middle" font-family="Nunito" font-weight="700">GDP</text><text x="350" y="164" font-size="9" fill="#8a7560" text-anchor="middle" font-family="Nunito" font-weight="700">TIME</text>
+<path d="M 55 125 C 100 125 130 32 195 32 C 260 32 280 125 345 130 C 368 132 388 148 408 148 C 438 148 468 55 522 55 C 562 55 592 95 642 105" stroke="#e85d04" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="120" cy="78" r="12" fill="#e85d04"/><text x="120" y="83" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne">1</text>
+<circle cx="195" cy="32" r="12" fill="#1d6fa4"/><text x="195" y="37" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne">2</text>
+<circle cx="278" cy="88" r="12" fill="#e85d04"/><text x="278" y="93" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne">3</text>
+<circle cx="408" cy="141" r="12" fill="#1d6fa4"/><text x="408" y="146" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne">4</text>
+<circle cx="490" cy="90" r="12" fill="#e85d04"/><text x="490" y="95" text-anchor="middle" font-size="11" fill="#fff" font-weight="800" font-family="Syne">5</text>
+</svg></div>
+<div class="hint-bar"><strong>Drag or Click:</strong> <span id="cyc-sel">drag a term into a box, or click one first</span></div>
+<div class="label-pool" id="label-pool"></div>
+<div class="cycle-zones">
+<div class="czone" id="cz1" onclick="dropTerm(1)"><div class="cz-num">①</div><div class="cz-clue">GDP rising, jobs being added</div><div class="cz-answer" id="ca1"></div></div>
+<div class="czone" id="cz2" onclick="dropTerm(2)"><div class="cz-num">②</div><div class="cz-clue">Highest point before the turn</div><div class="cz-answer" id="ca2"></div></div>
+<div class="czone" id="cz3" onclick="dropTerm(3)"><div class="cz-num">③</div><div class="cz-clue">GDP shrinking, layoffs begin</div><div class="cz-answer" id="ca3"></div></div>
+<div class="czone" id="cz4" onclick="dropTerm(4)"><div class="cz-num">④</div><div class="cz-clue">Lowest point, crash stops getting worse</div><div class="cz-answer" id="ca4"></div></div>
+<div class="czone" id="cz5" onclick="dropTerm(5)"><div class="cz-num">⑤</div><div class="cz-clue">Growth starts again after the bottom</div><div class="cz-answer" id="ca5"></div></div>
 </div>
+<button class="check-btn" onclick="checkCycle()">Check My Labels</button><div id="cycle-fb" style="text-align:center;font-weight:700;min-height:1.4rem"></div><button class="check-btn" id="cycle-rb" style="display:none;background:var(--accent2)" onclick="resetCycle()">Try Again</button>
+</div>
+
 <div class="sort-game" id="sort-game">
-  <div class="sec-title">🗓️ Phase Sorter</div>
-  <div class="sec-desc">Cards are shuffled every load. Drag each card into the numbered slot where it belongs. Click-to-place still works too.</div>
-  <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;font-weight:700;">Event Cards — drag or click one</div>
-  <div class="ev-list" id="ev-list"></div>
-  <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;font-weight:700;margin-top:1.25rem;">Timeline Slots — drop or click to place</div>
-  <div class="slot-list" id="slot-list"></div>
-  <button class="check-btn" onclick="checkSort()">Check My Order</button>
-  <div id="sort-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
-  <button class="check-btn" id="sort-rb" style="display:none;background:var(--accent2)" onclick="resetSort()">Try Again</button>
+<div class="sec-title">🗓️ Phase Sorter</div><div class="sec-desc">Drag each card into the numbered slot where it belongs. Click-to-place still works too.</div>
+<div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;font-weight:700">Event Cards — drag or click one</div><div class="ev-list" id="ev-list"></div>
+<div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;font-weight:700;margin-top:1.25rem">Timeline Slots — drop or click to place</div><div class="slot-list" id="slot-list"></div>
+<button class="check-btn" onclick="checkSort()">Check My Order</button><div id="sort-fb" style="text-align:center;font-weight:700;min-height:1.4rem"></div><button class="check-btn" id="sort-rb" style="display:none;background:var(--accent2)" onclick="resetSort()">Try Again</button>
 </div>
+
 <div class="predict-game" id="predict-game">
-  <div class="sec-title">🔮 Predict the Cycle</div>
-  <div class="sec-desc">Use the clues to predict where the economy is headed. This checks whether you can apply the business cycle, not just label it.</div>
-
-  <div class="predict-grid">
-    <div class="q-card">
-      <div class="q-num">Scenario 1 · Expansion Warning</div>
-      <div class="q-stem">GDP is rising, businesses are hiring, and consumer spending is strong. The economy is still growing, but growth is starting to slow. What phase usually comes next?</div>
-      <div class="choices">
-        <button class="ch-btn" onclick="ansPredict(0,this,true)">A. Peak</button>
-        <button class="ch-btn" onclick="ansPredict(0,this,false)">B. Trough</button>
-        <button class="ch-btn" onclick="ansPredict(0,this,false)">C. Recovery</button>
-      </div>
-      <div class="feedback" id="pfb0"></div>
-    </div>
-
-    <div class="q-card">
-      <div class="q-num">Scenario 2 · Downturn</div>
-      <div class="q-stem">GDP has fallen for two consecutive quarters. Businesses are cutting costs, and layoffs are rising. What is this officially called?</div>
-      <div class="choices">
-        <button class="ch-btn" onclick="ansPredict(1,this,true)">A. Recession</button>
-        <button class="ch-btn" onclick="ansPredict(1,this,false)">B. Expansion</button>
-        <button class="ch-btn" onclick="ansPredict(1,this,false)">C. Peak</button>
-      </div>
-      <div class="feedback" id="pfb1"></div>
-    </div>
-
-    <div class="q-card">
-      <div class="q-num">Scenario 3 · Bottom of the Cycle</div>
-      <div class="q-stem">The economy is still weak, but the crash has stopped getting worse. GDP is no longer falling as sharply. Which phase is this?</div>
-      <div class="choices">
-        <button class="ch-btn" onclick="ansPredict(2,this,true)">A. Trough</button>
-        <button class="ch-btn" onclick="ansPredict(2,this,false)">B. Peak</button>
-        <button class="ch-btn" onclick="ansPredict(2,this,false)">C. Expansion</button>
-      </div>
-      <div class="feedback" id="pfb2"></div>
-    </div>
-
-    <div class="q-card">
-      <div class="q-num">Scenario 4 · Early Warning Signs</div>
-      <div class="q-stem">Stock prices fall, building permits slow, and unemployment claims rise before GDP confirms a recession. What are these warning signs called?</div>
-      <div class="choices">
-        <button class="ch-btn" onclick="ansPredict(3,this,true)">A. Leading indicators</button>
-        <button class="ch-btn" onclick="ansPredict(3,this,false)">B. Lagging effects</button>
-        <button class="ch-btn" onclick="ansPredict(3,this,false)">C. Final GDP results</button>
-      </div>
-      <div class="feedback" id="pfb3"></div>
-    </div>
-  </div>
-
-  <button class="check-btn" onclick="finishPredict()">Finish Activity</button>
-  <button class="check-btn" onclick="sw('results')" style="background:var(--accent2);margin-top:0.25rem;">Open Results Screen</button>
-  <div id="predict-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
+<div class="sec-title">🔮 Predict the Cycle</div><div class="sec-desc">Use the clues to predict where the economy is headed.</div>
+<div class="q-card"><div class="q-num">Scenario 1</div><div class="q-stem">GDP is rising, hiring is strong, and growth is starting to slow. What phase usually comes next?</div><div class="choices"><button class="ch-btn" onclick="ansPredict(0,this,true)">A. Peak</button><button class="ch-btn" onclick="ansPredict(0,this,false)">B. Trough</button><button class="ch-btn" onclick="ansPredict(0,this,false)">C. Recovery</button></div><div class="feedback" id="pfb0"></div></div>
+<div class="q-card"><div class="q-num">Scenario 2</div><div class="q-stem">GDP has fallen for two consecutive quarters and layoffs are rising. What is this officially called?</div><div class="choices"><button class="ch-btn" onclick="ansPredict(1,this,true)">A. Recession</button><button class="ch-btn" onclick="ansPredict(1,this,false)">B. Expansion</button><button class="ch-btn" onclick="ansPredict(1,this,false)">C. Peak</button></div><div class="feedback" id="pfb1"></div></div>
+<div class="q-card"><div class="q-num">Scenario 3</div><div class="q-stem">The economy is weak, but the crash has stopped getting worse. Which phase is this?</div><div class="choices"><button class="ch-btn" onclick="ansPredict(2,this,true)">A. Trough</button><button class="ch-btn" onclick="ansPredict(2,this,false)">B. Peak</button><button class="ch-btn" onclick="ansPredict(2,this,false)">C. Expansion</button></div><div class="feedback" id="pfb2"></div></div>
+<div class="q-card"><div class="q-num">Scenario 4</div><div class="q-stem">Stock prices fall, building permits slow, and unemployment claims rise before GDP confirms a recession. What are these called?</div><div class="choices"><button class="ch-btn" onclick="ansPredict(3,this,true)">A. Leading indicators</button><button class="ch-btn" onclick="ansPredict(3,this,false)">B. Lagging effects</button><button class="ch-btn" onclick="ansPredict(3,this,false)">C. Final GDP results</button></div><div class="feedback" id="pfb3"></div></div>
+<button class="check-btn" onclick="finishPredict()">Finish Activity</button><div id="predict-fb" style="text-align:center;font-weight:700;min-height:1.4rem"></div>
 </div>
 
 <div class="results-game" id="results-game">
-  <div class="sec-title">🏁 Core Activity Results</div>
-  <div class="sec-desc">This screen appears after the three required Business Cycle activities. If you are testing the page, you can also open it with the Results tab.</div>
-
-  <div class="results-card">
-    <div class="results-title">Checkpoint Complete</div>
-    <p style="color:var(--muted);font-size:0.95rem;line-height:1.55;">
-      You practiced identifying phases, sorting the order of events, and predicting what happens next using economic clues.
-    </p>
-
-    <div class="results-grid">
-      <div class="results-mini"><h3 id="res-cycle">Activity 1</h3><p>Label the Business Cycle</p></div>
-      <div class="results-mini"><h3 id="res-sort">Activity 2</h3><p>Phase Sorter</p></div>
-      <div class="results-mini"><h3 id="res-predict">Activity 3</h3><p>Predict the Cycle</p></div>
-    </div>
-
-    <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);margin-bottom:0.35rem;">
-      Correct: <span id="final-c">0</span> · Wrong: <span id="final-w">0</span>
-    </div>
-
-    <p style="color:var(--muted);font-size:0.85rem;line-height:1.45;margin-bottom:1.4rem;">
-      The business cycle moves through expansion, peak, contraction, trough, and recovery. Leading indicators can warn that the cycle is turning before GDP officially confirms it.
-    </p>
-
-    <div class="unlock-row">
-      <button class="check-btn" onclick="unlockReviewTools()" style="margin:0;">Unlock Flashcards + Quiz</button>
-      <button class="check-btn" onclick="sw('cycle')" style="margin:0;background:var(--accent2);">Review Activities Again</button>
-    </div>
-  </div>
+<div class="sec-title">🏁 Core Activity Results</div><div class="sec-desc">Complete the three required activities, then unlock flashcards and the quiz.</div>
+<div class="results-card"><div class="results-title">Checkpoint Complete</div><p style="color:var(--muted);line-height:1.55">You practiced identifying phases, sequencing the cycle, and predicting what comes next.</p>
+<div class="results-grid"><div class="results-mini"><h3 id="res-cycle">Activity 1</h3><p>Label the Business Cycle</p></div><div class="results-mini"><h3 id="res-sort">Activity 2</h3><p>Phase Sorter</p></div><div class="results-mini"><h3 id="res-predict">Activity 3</h3><p>Predict the Cycle</p></div></div>
+<div style="font-family:Syne,sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);margin-bottom:1rem">Correct: <span id="final-c">0</span> · Wrong: <span id="final-w">0</span></div>
+<button class="check-btn" onclick="unlockReviewTools()">Unlock Flashcards + Quiz</button></div>
 </div>
 
 <div class="flash-game" id="flash-game">
-  <div class="sec-title">⚡ Key Terms</div>
-  <div class="sec-desc">Cards shuffle every time. Click to flip.</div>
-  <p style="text-align:center;font-size:0.75rem;color:var(--muted);margin-bottom:1rem;">👆 Click the card to flip</p>
-  <div class="card-wrap" onclick="flipCard()">
-    <div class="card-inner" id="ci">
-      <div class="card-face card-front"><div><div class="card-tag">Term</div><div class="card-term" id="ct">—</div></div></div>
-      <div class="card-face card-back"><div><div class="card-tag">Definition</div><div class="card-def" id="cd">—</div></div></div>
-    </div>
-  </div>
-  <div class="card-nav">
-    <button class="nav-btn" onclick="prevCard()">←</button>
-    <span class="card-progress" id="cp">1 / 9</span>
-    <button class="nav-btn" onclick="nextCard()">→</button>
-  </div>
+<div class="sec-title">⚡ Key Terms</div><div class="sec-desc">Cards shuffle every time. Click to flip.</div><p style="text-align:center;font-size:.75rem;color:var(--muted);margin-bottom:1rem">👆 Click the card to flip</p>
+<div class="card-wrap" onclick="flipCard()"><div class="card-inner" id="ci"><div class="card-face card-front"><div><div class="card-tag">Term</div><div class="card-term" id="ct">—</div></div></div><div class="card-face card-back"><div><div class="card-tag">Definition</div><div class="card-def" id="cd">—</div></div></div></div></div>
+<div class="card-nav"><button class="nav-btn" onclick="prevCard()">←</button><span class="card-progress" id="cp">1 / 9</span><button class="nav-btn" onclick="nextCard()">→</button></div>
 </div>
+
 <div class="mc-game" id="mc-game">
-  <div class="sec-title">🎯 Quick Quiz</div>
-  <div class="sec-desc">5 questions in random order. Answer choices shuffle too.</div>
-  <div id="mc-qs"></div>
-  <div class="qz-done" id="qz-done">
-    <div style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">Your Score</div>
-    <div class="big-score" id="fin-sc">5/5</div>
-    <div style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem" id="fin-msg"></div>
-    <button class="restart-btn" onclick="restartQuiz()">Play Again</button>
-  </div>
+<div class="sec-title">🎯 Quick Quiz</div><div class="sec-desc">5 questions in random order.</div><div id="mc-qs"></div><div class="qz-done" id="qz-done"><div style="font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Your Score</div><div class="big-score" id="fin-sc">5/5</div><div style="margin-top:.75rem;color:var(--muted);font-size:.9rem" id="fin-msg"></div><button class="restart-btn" onclick="restartQuiz()">Play Again</button></div>
 </div>
 </div>
+
 <script>
-function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
-var gC=0,gW=0,gS=0;
-function addScore(ok){if(ok){gC++;gS++;}else{gW++;gS=0;}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS;}
-var coreComplete={cycle:false,sort:false,predict:false};
-var reviewUnlocked=false;
-var predictAnswered=[false,false,false,false];
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t}return b}
+var gC=0,gW=0,gS=0;function addScore(ok){if(ok){gC++;gS++}else{gW++;gS=0}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS}
+var coreComplete={cycle:false,sort:false,predict:false},reviewUnlocked=false,predictAnswered=[false,false,false,false];
+function updateResultsScreen(){var fc=document.getElementById('final-c'),fw=document.getElementById('final-w');if(fc)fc.textContent=gC;if(fw)fw.textContent=gW;document.getElementById('res-cycle').textContent=(coreComplete.cycle?'✅ ':'⬜ ')+'Activity 1';document.getElementById('res-sort').textContent=(coreComplete.sort?'✅ ':'⬜ ')+'Activity 2';document.getElementById('res-predict').textContent=(coreComplete.predict?'✅ ':'⬜ ')+'Activity 3'}
+function sw(m){if((m==='flash'||m==='mc')&&!reviewUnlocked)m='results';['cycle','sort','predict','results','flash','mc'].forEach(function(id){var el=document.getElementById(id+'-game');if(el)el.classList.remove('active')});var t=document.getElementById(m+'-game');if(t)t.classList.add('active');updateResultsScreen();var order=['cycle','sort','predict','results','flash','mc'];document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',order[i]===m)})}
+function markCore(n){coreComplete[n]=true;updateResultsScreen();if(coreComplete.cycle&&coreComplete.sort&&coreComplete.predict)setTimeout(function(){sw('results')},500)}
+function unlockReviewTools(){reviewUnlocked=true;document.getElementById('flash-tab').classList.remove('locked');document.getElementById('mc-tab').classList.remove('locked');sw('flash')}
 
-function updateResultsScreen(){
-  var fc=document.getElementById('final-c');
-  var fw=document.getElementById('final-w');
-  if(fc) fc.textContent=gC;
-  if(fw) fw.textContent=gW;
+var CYC_ANS={1:'Expansion',2:'Peak',3:'Contraction',4:'Trough',5:'Recovery'},cycSel=null,cycPlaced={};
+function initCycle(){cycSel=null;cycPlaced={};var pool=document.getElementById('label-pool');pool.innerHTML='';shuffle(['Expansion','Peak','Contraction','Trough','Recovery']).forEach(function(term){var d=document.createElement('div');d.className='label-chip';d.textContent=term;d.dataset.term=term;d.draggable=true;d.ondragstart=function(e){e.dataTransfer.setData('text/plain',term);e.dataTransfer.setData('source','cycle')};d.onclick=function(){selectCycleTerm(term,d)};pool.appendChild(d)});[1,2,3,4,5].forEach(function(n){document.getElementById('cz'+n).className='czone';document.getElementById('ca'+n).textContent=''})}
+function selectCycleTerm(term,el){cycSel=term;document.querySelectorAll('.label-chip').forEach(function(c){c.classList.remove('selected')});el.classList.add('selected');document.getElementById('cyc-sel').textContent='"'+term+'" selected — now click a box'}
+function placeCycleTerm(n,term){if(!term)return;Object.keys(cycPlaced).forEach(function(k){if(cycPlaced[k]===term){delete cycPlaced[k];document.getElementById('ca'+k).textContent='';document.getElementById('cz'+k).classList.remove('filled')}});if(cycPlaced[n]){document.querySelectorAll('.label-chip').forEach(function(c){if(c.dataset.term===cycPlaced[n])c.classList.remove('used')})}cycPlaced[n]=term;document.getElementById('ca'+n).textContent=term;document.getElementById('cz'+n).classList.add('filled');document.querySelectorAll('.label-chip').forEach(function(c){if(c.dataset.term===term){c.classList.add('used');c.classList.remove('selected')}});cycSel=null;document.getElementById('cyc-sel').textContent='drag a term into a box, or click one first'}
+function dropTerm(n){if(cycSel)placeCycleTerm(n,cycSel)}
+function checkCycle(){if(Object.keys(cycPlaced).length<5){document.getElementById('cycle-fb').innerHTML='<span style="color:var(--accent)">Label all 5 zones first!</span>';return}var s=0;[1,2,3,4,5].forEach(function(n){var z=document.getElementById('cz'+n);z.classList.remove('filled','correct-zone','wrong-zone');if(cycPlaced[n]===CYC_ANS[n]){s++;z.classList.add('correct-zone')}else z.classList.add('wrong-zone')});addScore(s===5);markCore('cycle');document.getElementById('cycle-fb').innerHTML=s===5?'<span style="color:var(--correct)">🎉 Perfect!</span>':'<span style="color:var(--warn)">'+s+'/5 correct — red zones need work.</span>';document.getElementById('cycle-rb').style.display='block'}
+function resetCycle(){initCycle();document.getElementById('cycle-fb').innerHTML='';document.getElementById('cycle-rb').style.display='none'}
 
-  var rc=document.getElementById('res-cycle');
-  var rs=document.getElementById('res-sort');
-  var rp=document.getElementById('res-predict');
-  if(rc) rc.textContent=(coreComplete.cycle?'✅ ':'⬜ ')+'Activity 1';
-  if(rs) rs.textContent=(coreComplete.sort?'✅ ':'⬜ ')+'Activity 2';
-  if(rp) rp.textContent=(coreComplete.predict?'✅ ':'⬜ ')+'Activity 3';
-}
+var EVDATA=[{id:'e1',icon:'📈',text:'GDP is growing, businesses are hiring, consumer spending is up',slot:1},{id:'e2',icon:'🏔️',text:'GDP reaches its highest point — the economy is about to turn',slot:2},{id:'e3',icon:'📉',text:'GDP shrinks for two consecutive quarters — recession declared',slot:3},{id:'e4',icon:'🪨',text:'The crash stops getting worse — the floor has been reached',slot:4},{id:'e5',icon:'🌱',text:'Economic activity starts growing again after hitting the bottom',slot:5}],sortSel=null,sortPlaced={};
+function initSort(){sortSel=null;sortPlaced={};var list=document.getElementById('ev-list'),slots=document.getElementById('slot-list');list.innerHTML='';slots.innerHTML='';shuffle(EVDATA).forEach(function(ev){var d=document.createElement('div');d.className='ev-chip';d.id='ec-'+ev.id;d.draggable=true;d.innerHTML='<span class="ev-icon">'+ev.icon+'</span><span>'+ev.text+'</span>';d.ondragstart=function(e){e.dataTransfer.setData('text/plain',ev.id);e.dataTransfer.setData('source','sort')};d.onclick=function(){selectEvent(ev.id)};list.appendChild(d)});for(var i=1;i<=5;i++){var slot=document.createElement('div');slot.className='ev-slot';slot.id='es'+i;slot.innerHTML='<span class="es-num">'+i+'</span><span class="es-text" id="est'+i+'"><span class="es-empty">— drop or click a card here —</span></span>';(function(n){slot.onclick=function(){placeEv(n)};slot.ondragover=function(e){e.preventDefault();slot.classList.add('drag-over')};slot.ondragleave=function(){slot.classList.remove('drag-over')};slot.ondrop=function(e){e.preventDefault();slot.classList.remove('drag-over');if(e.dataTransfer.getData('source')==='sort'){sortSel=e.dataTransfer.getData('text/plain');placeEv(n)}}})(i);slots.appendChild(slot)}}
+function selectEvent(id){sortSel=id;document.querySelectorAll('.ev-chip').forEach(function(c){c.classList.remove('selected')});document.getElementById('ec-'+id).classList.add('selected')}
+function placeEv(n){if(!sortSel)return;var ev=EVDATA.find(function(e){return e.id===sortSel});if(!ev)return;Object.keys(sortPlaced).forEach(function(k){if(sortPlaced[k]===sortSel){delete sortPlaced[k];document.getElementById('est'+k).innerHTML='<span class="es-empty">— drop or click a card here —</span>';document.getElementById('es'+k).classList.remove('filled')}});if(sortPlaced[n])document.getElementById('ec-'+sortPlaced[n]).classList.remove('used');sortPlaced[n]=sortSel;document.getElementById('est'+n).innerHTML=ev.icon+' '+ev.text;document.getElementById('es'+n).classList.add('filled');document.getElementById('ec-'+ev.id).classList.add('used');document.getElementById('ec-'+ev.id).classList.remove('selected');sortSel=null}
+function checkSort(){if(Object.keys(sortPlaced).length<5){document.getElementById('sort-fb').innerHTML='<span style="color:var(--accent)">Fill all 5 slots first!</span>';return}var s=0;for(var i=1;i<=5;i++){var sl=document.getElementById('es'+i);sl.classList.remove('filled','correct-zone','wrong-zone');var ev=EVDATA.find(function(e){return e.id===sortPlaced[i]});if(ev&&ev.slot===i){s++;sl.classList.add('correct-zone')}else sl.classList.add('wrong-zone')}addScore(s===5);markCore('sort');document.getElementById('sort-fb').innerHTML=s===5?'<span style="color:var(--correct)">🎉 Perfect cycle order!</span>':'<span style="color:var(--warn)">'+s+'/5 — check red slots.</span>';document.getElementById('sort-rb').style.display='block'}
+function resetSort(){initSort();document.getElementById('sort-fb').innerHTML='';document.getElementById('sort-rb').style.display='none'}
 
-function sw(m){
-  if((m==='flash'||m==='mc')&&!reviewUnlocked){
-    m='results';
-  }
+function ansPredict(i,btn,correct){if(predictAnswered[i])return;predictAnswered[i]=true;btn.closest('.q-card').querySelectorAll('.ch-btn').forEach(function(b){b.disabled=true});var fb=document.getElementById('pfb'+i);fb.classList.add('show');if(correct){btn.classList.add('correct');fb.classList.add('correct');fb.textContent='Correct — you read the cycle signal.';addScore(true)}else{btn.classList.add('wrong');fb.classList.add('wrong');fb.textContent='Not quite — review the clue.';addScore(false)}}
+function finishPredict(){if(predictAnswered.some(function(v){return !v})){document.getElementById('predict-fb').innerHTML='<span style="color:var(--accent)">Answer all 4 prediction scenarios first.</span>';return}document.getElementById('predict-fb').innerHTML='<span style="color:var(--correct)">✅ Predict the Cycle complete.</span>';markCore('predict')}
 
-  ['cycle','sort','predict','results','flash','mc'].forEach(function(id){
-    var el=document.getElementById(id+'-game');
-    if(el) el.classList.remove('active');
-  });
+var CARDS=shuffle([{t:'Business Cycle',d:'The recurring pattern of expansion and contraction in economic activity over time.'},{t:'Expansion',d:'GDP grows, employment rises, and spending increases.'},{t:'Peak',d:'The highest point before contraction begins.'},{t:'Contraction',d:'GDP shrinks and unemployment rises.'},{t:'Recession',d:'Two consecutive quarters of negative GDP.'},{t:'Depression',d:'A severe, prolonged collapse.'},{t:'Trough',d:'The lowest point before recovery begins.'},{t:'Recovery',d:'Economic activity begins to grow again.'},{t:'Leading Indicators',d:'Data points that shift before GDP changes.'}]);var cI=0,cF=false;
+function renderCard(){document.getElementById('ct').textContent=CARDS[cI].t;document.getElementById('cd').textContent=CARDS[cI].d;document.getElementById('cp').textContent=(cI+1)+' / '+CARDS.length;document.getElementById('ci').classList.remove('flipped');cF=false}
+function flipCard(){cF=!cF;document.getElementById('ci').classList.toggle('flipped',cF)}function nextCard(){cI=(cI+1)%CARDS.length;renderCard()}function prevCard(){cI=(cI-1+CARDS.length)%CARDS.length;renderCard()}
+var ALLQ=[{s:'A recession is officially declared after GDP falls for how many consecutive quarters?',c:['Two','One','Four'],a:0,f:'Two consecutive quarters of negative GDP = official recession.'},{s:'The lowest point of a contraction before recovery begins is called what?',c:['Trough','Peak','Expansion'],a:0,f:'The trough is the floor.'},{s:'Stock prices and building permits shift before GDP confirms a turn. What are these?',c:['Leading indicators','Lagging effects','Final GDP results'],a:0,f:'Leading indicators shift early.'},{s:'GDP grows, hiring rises, and spending increases. What phase?',c:['Expansion','Contraction','Trough'],a:0,f:'Expansion means growth.'},{s:'GDP reaches its highest point before turning down. What phase?',c:['Peak','Recovery','Recession'],a:0,f:'Peak is the high point.'}];var SQ=[],mcAns=[],mcSc=0;
+function initQuiz(){SQ=shuffle(ALLQ).slice(0,5);mcAns=new Array(SQ.length).fill(false);mcSc=0;var c=document.getElementById('mc-qs');c.innerHTML='';document.getElementById('qz-done').classList.remove('show');SQ.forEach(function(q,qi){var idx=shuffle([0,1,2]),choices=idx.map(function(i){return q.c[i]}),correct=idx.indexOf(q.a),card=document.createElement('div');card.className='q-card';card.id='q'+qi;card.innerHTML='<div class="q-num">Question '+(qi+1)+' of '+SQ.length+'</div><div class="q-stem">'+q.s+'</div><div class="choices">'+choices.map(function(ch,ci){return '<button class="ch-btn" onclick="ansQ('+qi+','+ci+','+correct+')">'+String.fromCharCode(65+ci)+'. '+ch+'</button>'}).join('')+'</div><div class="feedback" id="fb'+qi+'"></div><button class="check-btn" id="nb'+qi+'" onclick="nxt('+qi+')">'+(qi<SQ.length-1?'Next Question':'See My Score')+'</button>';c.appendChild(card);if(qi>0)card.style.display='none'})}
+function ansQ(qi,ci,correct){if(mcAns[qi])return;mcAns[qi]=true;var ok=ci===correct;if(ok)mcSc++;addScore(ok);var card=document.getElementById('q'+qi);card.querySelectorAll('.ch-btn').forEach(function(b,i){b.disabled=true;if(i===correct)b.classList.add('correct');else if(i===ci&&!ok)b.classList.add('wrong')});var fb=document.getElementById('fb'+qi);fb.textContent=(ok?'Correct! ':'Not quite. ')+SQ[qi].f;fb.className='feedback show '+(ok?'correct':'wrong')}
+function nxt(qi){if(qi<SQ.length-1){var n=document.getElementById('q'+(qi+1));n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'start'})}else{var d=document.getElementById('qz-done');d.classList.add('show');document.getElementById('fin-sc').textContent=mcSc+'/'+SQ.length;document.getElementById('fin-msg').textContent=mcSc>=4?'Strong work!':'Review the terms and try again.';d.scrollIntoView({behavior:'smooth'})}}
+function restartQuiz(){initQuiz()}
 
-  var target=document.getElementById(m+'-game');
-  if(target) target.classList.add('active');
-
-  updateResultsScreen();
-
-  var order=['cycle','sort','predict','results','flash','mc'];
-  document.querySelectorAll('.tab-btn').forEach(function(b,i){
-    b.classList.toggle('active',order[i]===m);
-  });
-}
-
-function markCore(name){
-  coreComplete[name]=true;
-  updateResultsScreen();
-
-  if(coreComplete.cycle && coreComplete.sort && coreComplete.predict){
-    setTimeout(function(){sw('results');},400);
-  }
-}
-
-function unlockReviewTools(){
-  reviewUnlocked=true;
-  var ft=document.getElementById('flash-tab');
-  var mt=document.getElementById('mc-tab');
-  if(ft) ft.classList.remove('locked');
-  if(mt) mt.classList.remove('locked');
-  sw('flash');
-}
-
-function ansPredict(qi,btn,correct){
-  if(predictAnswered[qi])return;
-  predictAnswered[qi]=true;
-
-  var card=btn.closest('.q-card');
-  card.querySelectorAll('.ch-btn').forEach(function(b){b.disabled=true;});
-  var fb=document.getElementById('pfb'+qi);
-  fb.classList.add('show');
-
-  if(correct){
-    btn.classList.add('correct');
-    fb.classList.add('correct');
-    fb.textContent='Correct — you read the cycle signal accurately.';
-    addScore(true);
-  }else{
-    btn.classList.add('wrong');
-    fb.classList.add('wrong');
-    fb.textContent='Not quite — review the phase clue and move to the next scenario.';
-    addScore(false);
-  }
-}
-
-function finishPredict(){
-  if(predictAnswered.some(function(v){return !v;})){
-    document.getElementById('predict-fb').innerHTML='<span style="color:var(--accent)">Answer all 4 prediction scenarios first.</span>';
-    return;
-  }
-  document.getElementById('predict-fb').innerHTML='<span style="color:var(--correct)">✅ Predict the Cycle complete.</span>';
-  markCore('predict');
-}
-
-/* ── DRAG + DROP: LABEL THE CYCLE + PHASE SORTER ── */
-function setupCycleDragDrop(){
-  [1,2,3,4,5].forEach(function(n){
-    var zone=document.getElementById('cz'+n);
-    if(!zone || zone.dataset.dragReady==='true')return;
-    zone.dataset.dragReady='true';
-
-    zone.addEventListener('dragover',function(e){
-      e.preventDefault();
-      zone.classList.add('drag-over');
-    });
-
-    zone.addEventListener('dragleave',function(){
-      zone.classList.remove('drag-over');
-    });
-
-    zone.addEventListener('drop',function(e){
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      var source=e.dataTransfer.getData('source');
-      var term=e.dataTransfer.getData('text/plain');
-      if(source!=='cycle' || !term)return;
-      var chip=Array.prototype.find.call(document.querySelectorAll('.label-chip'),function(c){
-        return c.getAttribute('data-t')===term;
-      });
-      if(!chip || chip.classList.contains('lc-used'))return;
-      cycSel=term;
-      dropTerm(n);
-    });
-  });
-}
-
-function setupSortDragDrop(){
-  [1,2,3,4,5].forEach(function(n){
-    var slot=document.getElementById('es'+n);
-    if(!slot || slot.dataset.dragReady==='true')return;
-    slot.dataset.dragReady='true';
-
-    slot.addEventListener('dragover',function(e){
-      e.preventDefault();
-      slot.classList.add('drag-over');
-    });
-
-    slot.addEventListener('dragleave',function(){
-      slot.classList.remove('drag-over');
-    });
-
-    slot.addEventListener('drop',function(e){
-      e.preventDefault();
-      slot.classList.remove('drag-over');
-      var source=e.dataTransfer.getData('source');
-      var eid=e.dataTransfer.getData('text/plain');
-      if(source!=='sort' || !eid)return;
-      var card=document.getElementById('ec-'+eid);
-      if(!card || card.classList.contains('ev-used'))return;
-      sortSel=eid;
-      placeEv(n);
-    });
-  });
-}
-
-initCycle();initSort();setupCycleDragDrop();setupSortDragDrop();renderCard();initQuiz();
+function setupCycleDragDrop(){[1,2,3,4,5].forEach(function(n){var zone=document.getElementById('cz'+n);zone.ondragover=function(e){e.preventDefault();zone.classList.add('drag-over')};zone.ondragleave=function(){zone.classList.remove('drag-over')};zone.ondrop=function(e){e.preventDefault();zone.classList.remove('drag-over');if(e.dataTransfer.getData('source')==='cycle')placeCycleTerm(n,e.dataTransfer.getData('text/plain'))}})}
+window.addEventListener('DOMContentLoaded',function(){initCycle();initSort();setupCycleDragDrop();renderCard();initQuiz();updateResultsScreen()});
 </script>
 </body>
 </html>
