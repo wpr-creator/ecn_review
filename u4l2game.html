@@ -48,6 +48,61 @@
   .cz-clue{font-size:0.68rem;color:var(--muted);line-height:1.3;padding:0 0.15rem;}
   .cz-answer{font-weight:800;font-size:0.82rem;color:var(--accent2);min-height:1.1rem;line-height:1.2;}
   .sort-game{display:none;}.sort-game.active{display:block;}
+
+  .predict-game{display:none;}.predict-game.active{display:block;}
+  .results-game{display:none;}.results-game.active{display:block;}
+  .tab-btn.locked{opacity:0.45;cursor:not-allowed;filter:grayscale(0.35);}
+  .predict-grid{display:grid;gap:1rem;}
+  .predict-complete-card{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem;
+    box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .results-card{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:18px;
+    padding:2rem;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .results-title{
+    font-family:'Syne',sans-serif;
+    font-size:2.6rem;
+    font-weight:800;
+    line-height:1;
+    margin-bottom:0.75rem;
+    color:var(--ink);
+  }
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:1rem;
+    margin:1.5rem 0;
+  }
+  .results-mini{
+    background:var(--surface);
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:1rem;
+  }
+  .results-mini h3{
+    font-family:'Syne',sans-serif;
+    font-size:1.1rem;
+    font-weight:800;
+    margin-bottom:0.35rem;
+    color:var(--accent2);
+  }
+  .results-mini p{
+    color:var(--muted);
+    font-size:0.82rem;
+    line-height:1.45;
+  }
+  .unlock-row{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;}
+
   .ev-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
   .ev-chip{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:0.85rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:grab;transition:all 0.18s;line-height:1.4;box-shadow:var(--shadow);display:flex;align-items:center;gap:0.7rem;}
   .ev-chip:hover:not(.ev-used){border-color:var(--accent2);}
@@ -117,8 +172,10 @@
 <div class="mode-tabs">
   <button class="tab-btn active" onclick="sw('cycle')">📈 Label the Cycle</button>
   <button class="tab-btn" onclick="sw('sort')">🗓️ Phase Sorter</button>
-  <button class="tab-btn" onclick="sw('flash')">⚡ Key Terms</button>
-  <button class="tab-btn" onclick="sw('mc')">🎯 Quick Quiz</button>
+  <button class="tab-btn" onclick="sw('predict')">🔮 Predict the Cycle</button>
+  <button class="tab-btn" onclick="sw('results')">🏁 Results</button>
+  <button class="tab-btn locked" id="flash-tab" onclick="sw('flash')">⚡ Key Terms</button>
+  <button class="tab-btn locked" id="mc-tab" onclick="sw('mc')">🎯 Quick Quiz</button>
 </div>
 <div class="game-area">
 <div class="cycle-game active" id="cycle-game">
@@ -162,6 +219,92 @@
   <div id="sort-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
   <button class="check-btn" id="sort-rb" style="display:none;background:var(--accent2)" onclick="resetSort()">Try Again</button>
 </div>
+<div class="predict-game" id="predict-game">
+  <div class="sec-title">🔮 Predict the Cycle</div>
+  <div class="sec-desc">Use the clues to predict where the economy is headed. This checks whether you can apply the business cycle, not just label it.</div>
+
+  <div class="predict-grid">
+    <div class="q-card">
+      <div class="q-num">Scenario 1 · Expansion Warning</div>
+      <div class="q-stem">GDP is rising, businesses are hiring, and consumer spending is strong. The economy is still growing, but growth is starting to slow. What phase usually comes next?</div>
+      <div class="choices">
+        <button class="ch-btn" onclick="ansPredict(0,this,true)">A. Peak</button>
+        <button class="ch-btn" onclick="ansPredict(0,this,false)">B. Trough</button>
+        <button class="ch-btn" onclick="ansPredict(0,this,false)">C. Recovery</button>
+      </div>
+      <div class="feedback" id="pfb0"></div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Scenario 2 · Downturn</div>
+      <div class="q-stem">GDP has fallen for two consecutive quarters. Businesses are cutting costs, and layoffs are rising. What is this officially called?</div>
+      <div class="choices">
+        <button class="ch-btn" onclick="ansPredict(1,this,true)">A. Recession</button>
+        <button class="ch-btn" onclick="ansPredict(1,this,false)">B. Expansion</button>
+        <button class="ch-btn" onclick="ansPredict(1,this,false)">C. Peak</button>
+      </div>
+      <div class="feedback" id="pfb1"></div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Scenario 3 · Bottom of the Cycle</div>
+      <div class="q-stem">The economy is still weak, but the crash has stopped getting worse. GDP is no longer falling as sharply. Which phase is this?</div>
+      <div class="choices">
+        <button class="ch-btn" onclick="ansPredict(2,this,true)">A. Trough</button>
+        <button class="ch-btn" onclick="ansPredict(2,this,false)">B. Peak</button>
+        <button class="ch-btn" onclick="ansPredict(2,this,false)">C. Expansion</button>
+      </div>
+      <div class="feedback" id="pfb2"></div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Scenario 4 · Early Warning Signs</div>
+      <div class="q-stem">Stock prices fall, building permits slow, and unemployment claims rise before GDP confirms a recession. What are these warning signs called?</div>
+      <div class="choices">
+        <button class="ch-btn" onclick="ansPredict(3,this,true)">A. Leading indicators</button>
+        <button class="ch-btn" onclick="ansPredict(3,this,false)">B. Lagging effects</button>
+        <button class="ch-btn" onclick="ansPredict(3,this,false)">C. Final GDP results</button>
+      </div>
+      <div class="feedback" id="pfb3"></div>
+    </div>
+  </div>
+
+  <button class="check-btn" onclick="finishPredict()">Finish Activity</button>
+  <button class="check-btn" onclick="sw('results')" style="background:var(--accent2);margin-top:0.25rem;">Open Results Screen</button>
+  <div id="predict-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
+</div>
+
+<div class="results-game" id="results-game">
+  <div class="sec-title">🏁 Core Activity Results</div>
+  <div class="sec-desc">This screen appears after the three required Business Cycle activities. If you are testing the page, you can also open it with the Results tab.</div>
+
+  <div class="results-card">
+    <div class="results-title">Checkpoint Complete</div>
+    <p style="color:var(--muted);font-size:0.95rem;line-height:1.55;">
+      You practiced identifying phases, sorting the order of events, and predicting what happens next using economic clues.
+    </p>
+
+    <div class="results-grid">
+      <div class="results-mini"><h3 id="res-cycle">Activity 1</h3><p>Label the Business Cycle</p></div>
+      <div class="results-mini"><h3 id="res-sort">Activity 2</h3><p>Phase Sorter</p></div>
+      <div class="results-mini"><h3 id="res-predict">Activity 3</h3><p>Predict the Cycle</p></div>
+    </div>
+
+    <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);margin-bottom:0.35rem;">
+      Correct: <span id="final-c">0</span> · Wrong: <span id="final-w">0</span>
+    </div>
+
+    <p style="color:var(--muted);font-size:0.85rem;line-height:1.45;margin-bottom:1.4rem;">
+      The business cycle moves through expansion, peak, contraction, trough, and recovery. Leading indicators can warn that the cycle is turning before GDP officially confirms it.
+    </p>
+
+    <div class="unlock-row">
+      <button class="check-btn" onclick="unlockReviewTools()" style="margin:0;">Unlock Flashcards + Quiz</button>
+      <button class="check-btn" onclick="sw('cycle')" style="margin:0;background:var(--accent2);">Review Activities Again</button>
+    </div>
+  </div>
+</div>
+
 <div class="flash-game" id="flash-game">
   <div class="sec-title">⚡ Key Terms</div>
   <div class="sec-desc">Cards shuffle every time. Click to flip.</div>
@@ -194,115 +337,93 @@
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 var gC=0,gW=0,gS=0;
 function addScore(ok){if(ok){gC++;gS++;}else{gW++;gS=0;}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS;}
-function sw(m){['cycle','sort','flash','mc'].forEach(function(id){document.getElementById(id+'-game').classList.remove('active');});document.getElementById(m+'-game').classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',['cycle','sort','flash','mc'][i]===m);});}
-var CYC_ANS={1:'Expansion',2:'Peak',3:'Contraction',4:'Trough',5:'Recovery'};
-var cycSel=null,cycPlaced={};
-function initCycle(){
-  cycSel=null;cycPlaced={};
-  var terms=shuffle(['Expansion','Peak','Contraction','Trough','Recovery']);
-  var pool=document.getElementById('label-pool');pool.innerHTML='';
-  terms.forEach(function(t){var d=document.createElement('div');d.className='label-chip';d.setAttribute('data-t',t);d.setAttribute('draggable','true');d.textContent=t;d.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',t);e.dataTransfer.setData('source','cycle');e.dataTransfer.effectAllowed='move';});d.onclick=function(){pickTerm(t,d);};pool.appendChild(d);});
-  [1,2,3,4,5].forEach(function(n){document.getElementById('cz'+n).classList.remove('cz-filled','cz-correct','cz-wrong');document.getElementById('ca'+n).textContent='';});
-  document.getElementById('cycle-fb').innerHTML='';document.getElementById('cycle-rb').style.display='none';
-  document.getElementById('cyc-sel').textContent='drag a term into a box, or click one first';document.getElementById('cyc-sel').style.color='var(--muted)';
+var coreComplete={cycle:false,sort:false,predict:false};
+var reviewUnlocked=false;
+var predictAnswered=[false,false,false,false];
+
+function updateResultsScreen(){
+  var fc=document.getElementById('final-c');
+  var fw=document.getElementById('final-w');
+  if(fc) fc.textContent=gC;
+  if(fw) fw.textContent=gW;
+
+  var rc=document.getElementById('res-cycle');
+  var rs=document.getElementById('res-sort');
+  var rp=document.getElementById('res-predict');
+  if(rc) rc.textContent=(coreComplete.cycle?'✅ ':'⬜ ')+'Activity 1';
+  if(rs) rs.textContent=(coreComplete.sort?'✅ ':'⬜ ')+'Activity 2';
+  if(rp) rp.textContent=(coreComplete.predict?'✅ ':'⬜ ')+'Activity 3';
 }
-function pickTerm(t,el){
-  if(cycSel===t){cycSel=null;document.querySelectorAll('.label-chip').forEach(function(c){c.classList.remove('lc-selected');});document.getElementById('cyc-sel').textContent='drag a term into a box, or click one first';document.getElementById('cyc-sel').style.color='var(--muted)';return;}
-  document.querySelectorAll('.label-chip').forEach(function(c){c.classList.remove('lc-selected');});
-  el.classList.add('lc-selected');cycSel=t;
-  document.getElementById('cyc-sel').textContent='"'+t+'" selected — now click a numbered box';document.getElementById('cyc-sel').style.color='var(--accent)';
-}
-function dropTerm(n){
-  if(!cycSel)return;
-  Object.keys(cycPlaced).forEach(function(k){if(cycPlaced[k]===cycSel){delete cycPlaced[k];document.getElementById('ca'+k).textContent='';document.getElementById('cz'+k).classList.remove('cz-filled');}});
-  if(cycPlaced[n]){var old=cycPlaced[n];document.querySelectorAll('.label-chip').forEach(function(c){if(c.getAttribute('data-t')===old)c.classList.remove('lc-used');});}
-  cycPlaced[n]=cycSel;document.getElementById('ca'+n).textContent=cycSel;document.getElementById('cz'+n).classList.add('cz-filled');
-  document.querySelectorAll('.label-chip').forEach(function(c){if(c.getAttribute('data-t')===cycSel){c.classList.add('lc-used');c.classList.remove('lc-selected');}});
-  cycSel=null;document.getElementById('cyc-sel').textContent='drag a term into a box, or click one first';document.getElementById('cyc-sel').style.color='var(--muted)';
-}
-function checkCycle(){
-  if(Object.keys(cycPlaced).length<5){document.getElementById('cycle-fb').innerHTML='<span style="color:var(--accent)">Label all 5 zones first!</span>';return;}
-  var s=0;[1,2,3,4,5].forEach(function(n){var z=document.getElementById('cz'+n);z.classList.remove('cz-filled');if(cycPlaced[n]===CYC_ANS[n]){z.classList.add('cz-correct');s++;}else{z.classList.add('cz-wrong');}});
-  addScore(s===5);document.getElementById('cycle-fb').innerHTML=s===5?'<span style="color:var(--correct)">🎉 Perfect! All 5 phases correct.</span>':'<span style="color:var(--warn)">'+s+'/5 correct — red zones need work.</span>';document.getElementById('cycle-rb').style.display='block';
-}
-function resetCycle(){initCycle();}
-var EVDATA=[
-  {id:'e1',icon:'📈',text:'GDP is growing, businesses are hiring, consumer spending is up',slot:1},
-  {id:'e2',icon:'🏔️',text:'GDP reaches its highest point — the economy is about to turn',slot:2},
-  {id:'e3',icon:'📉',text:'GDP shrinks for two consecutive quarters — recession declared',slot:3},
-  {id:'e4',icon:'🪨',text:'The crash stops getting worse — the floor has been reached',slot:4},
-  {id:'e5',icon:'🌱',text:'Economic activity starts growing again after hitting the bottom',slot:5},
-];
-var sortSel=null,sortPlaced={};
-function initSort(){
-  sortSel=null;sortPlaced={};
-  var shuffled=shuffle(EVDATA);
-  var el=document.getElementById('ev-list');el.innerHTML='';
-  shuffled.forEach(function(e){var d=document.createElement('div');d.className='ev-chip';d.id='ec-'+e.id;d.setAttribute('draggable','true');d.innerHTML='<span class="ev-icon">'+e.icon+'</span><span>'+e.text+'</span>';d.addEventListener('dragstart',function(ev){ev.dataTransfer.setData('text/plain',e.id);ev.dataTransfer.setData('source','sort');ev.dataTransfer.effectAllowed='move';});d.onclick=function(){pickEv(e.id);};el.appendChild(d);});
-  var sl=document.getElementById('slot-list');sl.innerHTML='';
-  for(var i=1;i<=5;i++){var d2=document.createElement('div');d2.className='ev-slot';d2.id='es'+i;d2.innerHTML='<span class="es-num">'+i+'</span><span class="es-text" id="est'+i+'"><span class="es-empty">— drop or click a card here —</span></span>';(function(n){d2.onclick=function(){placeEv(n);};})(i);sl.appendChild(d2);}
-  document.getElementById('sort-fb').innerHTML='';document.getElementById('sort-rb').style.display='none';
-}
-function pickEv(eid){if(sortSel===eid){sortSel=null;document.querySelectorAll('.ev-chip').forEach(function(c){c.classList.remove('ev-sel');});return;}document.querySelectorAll('.ev-chip').forEach(function(c){c.classList.remove('ev-sel');});document.getElementById('ec-'+eid).classList.add('ev-sel');sortSel=eid;}
-function placeEv(n){
-  if(!sortSel)return;var ev=EVDATA.find(function(e){return e.id===sortSel;});
-  Object.keys(sortPlaced).forEach(function(k){if(sortPlaced[k]===sortSel){delete sortPlaced[k];document.getElementById('est'+k).innerHTML='<span class="es-empty">— drop or click a card here —</span>';document.getElementById('es'+k).classList.remove('es-filled');}});
-  if(sortPlaced[n]){document.getElementById('ec-'+sortPlaced[n]).classList.remove('ev-used');}
-  sortPlaced[n]=sortSel;document.getElementById('est'+n).innerHTML=ev.icon+' '+ev.text;document.getElementById('es'+n).classList.add('es-filled');
-  document.getElementById('ec-'+ev.id).classList.add('ev-used');document.getElementById('ec-'+ev.id).classList.remove('ev-sel');sortSel=null;
-}
-function checkSort(){
-  if(Object.keys(sortPlaced).length<5){document.getElementById('sort-fb').innerHTML='<span style="color:var(--accent)">Fill all 5 slots first!</span>';return;}
-  var s=0;for(var i=1;i<=5;i++){var sl=document.getElementById('es'+i);sl.classList.remove('es-filled');var ev=EVDATA.find(function(e){return e.id===sortPlaced[i];});if(ev&&ev.slot===i){sl.classList.add('es-correct');s++;}else{sl.classList.add('es-wrong');}}
-  addScore(s===5);document.getElementById('sort-fb').innerHTML=s===5?'<span style="color:var(--correct)">🎉 Perfect cycle order!</span>':'<span style="color:var(--warn)">'+s+'/5 — check the red slots.</span>';document.getElementById('sort-rb').style.display='block';
-}
-function resetSort(){initSort();}
-var CARDS=shuffle([
-  {t:'Business Cycle',d:'The recurring pattern of expansion and contraction in economic activity over time.'},
-  {t:'Expansion',d:'GDP grows, employment rises, and consumer spending increases.'},
-  {t:'Peak',d:'The highest point of an expansion before the economy begins to contract.'},
-  {t:'Contraction',d:'GDP shrinks, businesses cut costs, and unemployment rises.'},
-  {t:'Recession',d:'A decline in economic activity lasting at least two consecutive quarters of negative GDP.'},
-  {t:'Depression',d:'A severe, prolonged collapse with double-digit unemployment lasting years.'},
-  {t:'Trough',d:'The lowest point of a contraction before recovery begins — the crash stops getting worse.'},
-  {t:'Recovery',d:'Economic activity begins to grow again after the trough.'},
-  {t:'Leading Indicators',d:'Data points (stock prices, building permits, unemployment claims) that shift before GDP changes — used to predict the next phase.'},
-]);
-var cI=0,cF=false;
-function renderCard(){document.getElementById('ct').textContent=CARDS[cI].t;document.getElementById('cd').textContent=CARDS[cI].d;document.getElementById('cp').textContent=(cI+1)+' / '+CARDS.length;document.getElementById('ci').classList.remove('flipped');cF=false;}
-function flipCard(){cF=!cF;document.getElementById('ci').classList.toggle('flipped',cF);}
-function nextCard(){cI=(cI+1)%CARDS.length;renderCard();}
-function prevCard(){cI=(cI-1+CARDS.length)%CARDS.length;renderCard();}
-var ALLQ=[
-  {s:'After the 2008 crash, the U.S. did not return to strong growth for nearly a decade. What phase does that slow return represent?',c:['Recovery','Expansion','Trough'],a:0,f:'Recovery is when growth begins again — but early recovery is slow. People often don\'t feel it for a long time.'},
-  {s:'A recession is officially declared after GDP falls for how many consecutive quarters?',c:['Two','One','Four'],a:0,f:'Two consecutive quarters of negative GDP = official recession. Families feel it weeks before the label is applied.'},
-  {s:'Stock prices drop, building permits slow, unemployment claims spike — but GDP has not yet confirmed a downturn. What are these signals?',c:['Leading indicators','Lagging indicators','Recession triggers'],a:0,f:'Leading indicators shift before GDP confirms the change. Institutional investors use them to exit early.'},
-  {s:'In 2020, COVID shutdowns collapsed GDP. The worst point — before recovery started — is called what?',c:['The trough','The recession','The contraction'],a:0,f:'The trough is the floor — the moment the crash stops getting worse.'},
-  {s:'A depression differs from a recession because a depression involves what?',c:['Severe collapse lasting years with very high unemployment','Two consecutive quarters of negative GDP','A single sharp drop in stock prices'],a:0,f:'The Great Depression (1929–1939) lasted a decade with unemployment over 25%. A recession is measured in quarters; a depression in years.'},
-  {s:'When would a government most likely use expansionary policy to stimulate the economy?',c:['During a contraction or recession','During a peak','During a recovery'],a:0,f:'Expansionary policy pushes money into a slowing economy — it is most needed when GDP is shrinking.'},
-];
-var SQ=[],mcAns=[],mcSc=0;
-function initQuiz(){
-  SQ=shuffle(ALLQ).slice(0,5);mcAns=new Array(SQ.length).fill(false);mcSc=0;
-  var c=document.getElementById('mc-qs');c.innerHTML='';document.getElementById('qz-done').classList.remove('show');
-  SQ.forEach(function(q,qi){
-    var idxs=shuffle([0,1,2]);var nc=idxs.map(function(i){return q.c[i];});var na=idxs.indexOf(q.a);
-    var card=document.createElement('div');card.className='q-card';card.id='q'+qi;
-    card.innerHTML='<div class="q-num">Question '+(qi+1)+' of '+SQ.length+'</div><div class="q-stem">'+q.s+'</div><div class="choices">'+nc.map(function(ch,ci){return'<button class="ch-btn" onclick="ansQ('+qi+','+ci+','+na+')">'+String.fromCharCode(65+ci)+'. '+ch+'</button>';}).join('')+'</div><div class="feedback" id="fb'+qi+'"></div><button class="next-btn" id="nb'+qi+'" onclick="nxt('+qi+')">'+(qi<SQ.length-1?'Next Question &rarr;':'See My Score')+'</button>';
-    c.appendChild(card);if(qi>0)card.style.display='none';
+
+function sw(m){
+  if((m==='flash'||m==='mc')&&!reviewUnlocked){
+    m='results';
+  }
+
+  ['cycle','sort','predict','results','flash','mc'].forEach(function(id){
+    var el=document.getElementById(id+'-game');
+    if(el) el.classList.remove('active');
+  });
+
+  var target=document.getElementById(m+'-game');
+  if(target) target.classList.add('active');
+
+  updateResultsScreen();
+
+  var order=['cycle','sort','predict','results','flash','mc'];
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){
+    b.classList.toggle('active',order[i]===m);
   });
 }
-function ansQ(qi,ci,correct){
-  if(mcAns[qi])return;mcAns[qi]=true;var q=SQ[qi];var ok=ci===correct;if(ok)mcSc++;addScore(ok);
-  document.getElementById('q'+qi).querySelectorAll('.ch-btn').forEach(function(b,i){b.disabled=true;if(i===correct)b.classList.add('correct');else if(i===ci&&!ok)b.classList.add('wrong');});
-  var fb=document.getElementById('fb'+qi);fb.textContent=(ok?'Correct! ':'Not quite. ')+q.f;fb.className='feedback show '+(ok?'correct':'wrong');
-  document.getElementById('nb'+qi).classList.add('show');
+
+function markCore(name){
+  coreComplete[name]=true;
+  updateResultsScreen();
+
+  if(coreComplete.cycle && coreComplete.sort && coreComplete.predict){
+    setTimeout(function(){sw('results');},400);
+  }
 }
-function nxt(qi){
-  if(qi<SQ.length-1){var n=document.getElementById('q'+(qi+1));n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'start'});}
-  else{var d=document.getElementById('qz-done');d.classList.add('show');document.getElementById('fin-sc').textContent=mcSc+'/'+SQ.length;document.getElementById('fin-msg').textContent=['Keep grinding!','Getting there!','Solid work!','Almost perfect!','Perfect! Business cycle mastered.'][mcSc-1]||'';d.scrollIntoView({behavior:'smooth'});}
+
+function unlockReviewTools(){
+  reviewUnlocked=true;
+  var ft=document.getElementById('flash-tab');
+  var mt=document.getElementById('mc-tab');
+  if(ft) ft.classList.remove('locked');
+  if(mt) mt.classList.remove('locked');
+  sw('flash');
 }
-function restartQuiz(){initQuiz();}
+
+function ansPredict(qi,btn,correct){
+  if(predictAnswered[qi])return;
+  predictAnswered[qi]=true;
+
+  var card=btn.closest('.q-card');
+  card.querySelectorAll('.ch-btn').forEach(function(b){b.disabled=true;});
+  var fb=document.getElementById('pfb'+qi);
+  fb.classList.add('show');
+
+  if(correct){
+    btn.classList.add('correct');
+    fb.classList.add('correct');
+    fb.textContent='Correct — you read the cycle signal accurately.';
+    addScore(true);
+  }else{
+    btn.classList.add('wrong');
+    fb.classList.add('wrong');
+    fb.textContent='Not quite — review the phase clue and move to the next scenario.';
+    addScore(false);
+  }
+}
+
+function finishPredict(){
+  if(predictAnswered.some(function(v){return !v;})){
+    document.getElementById('predict-fb').innerHTML='<span style="color:var(--accent)">Answer all 4 prediction scenarios first.</span>';
+    return;
+  }
+  document.getElementById('predict-fb').innerHTML='<span style="color:var(--correct)">✅ Predict the Cycle complete.</span>';
+  markCore('predict');
+}
 
 /* ── DRAG + DROP: LABEL THE CYCLE + PHASE SORTER ── */
 function setupCycleDragDrop(){
