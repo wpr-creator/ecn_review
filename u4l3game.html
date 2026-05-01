@@ -6,9 +6,9 @@
 <title>The Price of Everything</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0d0d0d;--surface:#1a1a1a;--card:#242424;--ink:#f0f0f0;--muted:#999;--accent:#f7c948;--accent2:#5b8dee;--accent3:#e05c5c;--green:#4caf7d;--border:rgba(255,255,255,0.10);--correct:#4caf7d;--wrong:#e05c5c;--shadow:0 4px 20px rgba(0,0,0,0.5);}
+  :root{--bg:#0d0d0d;--surface:#171717;--card:#232323;--ink:#f4f4f4;--muted:#a4a4a4;--accent:#ff6b4a;--accent2:#4da3ff;--accent3:#ff3b2f;--gold:#f7c948;--green:#4caf7d;--border:rgba(255,255,255,0.11);--correct:#4caf7d;--wrong:#e05c5c;--shadow:0 4px 20px rgba(0,0,0,0.5);}
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{background:linear-gradient(135deg,rgba(255,107,74,0.10),rgba(13,13,13,1) 42%,rgba(77,163,255,0.10));color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(247,201,72,0.03) 40px);pointer-events:none;}
   header{padding:2rem 2rem 1.5rem;text-align:center;}
   .eyebrow{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;}
@@ -35,7 +35,7 @@
   .hint-bar strong{color:var(--accent);}
   .ut-game{display:none;}.ut-game.active{display:block;}
   .scen-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
-  .scen-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.18s;line-height:1.4;}
+  .scen-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:grab;transition:all 0.18s;line-height:1.4;}
   .scen-chip:hover:not(.sc-used){border-color:var(--accent);}
   .scen-chip.sc-sel{border-color:var(--accent);background:rgba(247,201,72,0.08);}
   .scen-chip.sc-used{opacity:0.3;pointer-events:none;}
@@ -44,7 +44,8 @@
   .ut-col-head{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);cursor:pointer;}
   .col-fr{color:var(--accent);}.col-st{color:var(--accent2);}.col-cy{color:var(--accent3);}
   .ut-col-sub{font-size:0.7rem;color:var(--muted);margin-bottom:0.6rem;}
-  .ut-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;}
+  .ut-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;border:1px dashed transparent;border-radius:8px;padding:0.35rem;transition:all 0.18s;}
+  .ut-zone.drag-over{border-color:var(--accent);background:rgba(255,107,74,0.08);}
   .placed-sc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.45rem 0.7rem;font-size:0.72rem;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3;}
   .placed-sc:hover{opacity:0.6;}
   .result-row{font-size:0.8rem;padding:0.4rem 0.75rem;border-radius:6px;margin:0.2rem 0;font-weight:600;line-height:1.4;}
@@ -52,7 +53,7 @@
   .result-row.bad{background:rgba(224,92,92,0.1);color:var(--wrong);}
   .ct-game{display:none;}.ct-game.active{display:block;}
   .worker-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
-  .wkr-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.18s;line-height:1.4;display:block;width:100%;text-align:left;}
+  .wkr-chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--ink);cursor:grab;transition:all 0.18s;line-height:1.4;display:block;width:100%;text-align:left;}
   .wkr-chip:hover:not(.wk-used){border-color:var(--accent);}
   .wkr-chip.wk-sel{border-color:var(--accent);background:rgba(247,201,72,0.08);}
   .wkr-chip.wk-used{opacity:0.3;pointer-events:none;}
@@ -61,7 +62,48 @@
   .ct-col-head{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);cursor:pointer;}
   .col-yes{color:var(--green);}.col-no{color:var(--accent3);}
   .ct-col-sub{font-size:0.7rem;color:var(--muted);margin-bottom:0.6rem;}
-  .ct-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;}
+  .ct-zone{min-height:60px;cursor:pointer;display:flex;flex-direction:column;gap:0.35rem;border:1px dashed transparent;border-radius:8px;padding:0.35rem;transition:all 0.18s;}
+  .ct-zone.drag-over{border-color:var(--accent2);background:rgba(77,163,255,0.08);}
+
+  .ss-game{display:none;}.ss-game.active{display:block;}
+  .rs-game{display:none;}.rs-game.active{display:block;}
+  .tab-btn.locked{opacity:0.42;cursor:not-allowed;filter:grayscale(0.35);}
+  .ss-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;box-shadow:var(--shadow);margin-bottom:1rem;}
+  .ss-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+  .seesaw-stage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;}
+  .seesaw-wrap{position:relative;width:100%;max-width:340px;height:130px;margin-top:0.7rem;}
+  .seesaw-beam{position:absolute;left:50%;top:52px;width:280px;height:12px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--accent2));border-radius:999px;transform-origin:center;transform:translateX(-50%) rotate(0deg);transition:transform 0.35s ease;box-shadow:0 6px 18px rgba(0,0,0,0.35);}
+  .seesaw-pivot{position:absolute;left:50%;top:65px;transform:translateX(-50%);width:0;height:0;border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:58px solid rgba(247,201,72,0.85);}
+  .ss-weight{position:absolute;top:18px;width:112px;text-align:center;font-family:'Space Mono',monospace;font-size:0.66rem;font-weight:700;line-height:1.25;text-transform:uppercase;}
+  .ss-weight strong{display:block;font-size:1.4rem;font-family:'Outfit',sans-serif;}
+  .ss-inf{left:0;color:var(--accent);}
+  .ss-unem{right:0;color:var(--accent2);}
+  .graph-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:230px;}
+  .graph-title{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+  .slider-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem;}
+  .slider-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+  .slider-row input{flex:1;min-width:220px;accent-color:var(--accent2);}
+  .live-readout{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-top:1rem;}
+  .readout-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem;text-align:center;}
+  .readout-card span{display:block;font-family:'Space Mono',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.25rem;}
+  .readout-card strong{font-size:1.5rem;}
+  .scenario-checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem;margin-top:1rem;}
+  .scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+  .scenario-card h3{font-size:0.8rem;font-family:'Space Mono',monospace;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.45rem;}
+  .scenario-card p{font-size:0.82rem;color:var(--muted);line-height:1.45;margin-bottom:0.75rem;}
+  .mini-btn{background:var(--accent);color:#1a1206;border:none;border-radius:6px;padding:0.55rem 0.85rem;font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:700;cursor:pointer;}
+  .mini-btn:hover{transform:scale(1.03);}
+  .ss-status{display:inline-block;margin-top:0.6rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);}
+  .takeaway-select{width:100%;background:var(--card);border:1px solid var(--border);color:var(--ink);border-radius:8px;padding:0.65rem;font-family:'Outfit',sans-serif;font-weight:600;}
+  .rs-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;box-shadow:var(--shadow);text-align:center;}
+  .rs-title{font-size:2.25rem;font-weight:800;line-height:1;font-family:'Outfit',sans-serif;margin-bottom:0.6rem;}
+  .rs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.8rem;margin:1.25rem 0;}
+  .rs-mini{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+  .rs-mini h3{font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;}
+  .rs-mini p{color:var(--muted);font-size:0.82rem;line-height:1.4;}
+  .unlock-row{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;}
+  @media(max-width:740px){.ss-grid{grid-template-columns:1fr;}}
+
   .placed-wk{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.45rem 0.7rem;font-size:0.72rem;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3;}
   .placed-wk:hover{opacity:0.6;}
   .fl-game{display:none;}.fl-game.active{display:block;}
@@ -123,8 +165,10 @@
 <div class="mode-tabs">
   <button class="tab-btn active" onclick="sw('ut')">Unemployment Sorter</button>
   <button class="tab-btn" onclick="sw('ct')">Counted in the Rate?</button>
-  <button class="tab-btn" onclick="sw('fl')">Key Terms</button>
-  <button class="tab-btn" onclick="sw('mc')">Quick Quiz</button>
+  <button class="tab-btn" onclick="sw('ss')">See-Saw + Phillips Curve</button>
+  <button class="tab-btn" onclick="sw('rs')">Results</button>
+  <button class="tab-btn locked" id="fl-tab" onclick="sw('fl')">Key Terms</button>
+  <button class="tab-btn locked" id="mc-tab" onclick="sw('mc')">Quick Quiz</button>
 </div>
 <div class="game-area">
 
@@ -177,6 +221,103 @@
   <button class="check-btn" id="ct-rb" style="display:none;background:var(--accent2)" onclick="resetCT()">Try Again</button>
 </div>
 
+<div class="ss-game" id="ss-game">
+  <div class="sec-title">See-Saw + Phillips Curve</div>
+  <div class="sec-desc">Move the slider. Watch the see-saw and graph change. Then complete the two checks and choose the takeaway.</div>
+
+  <div class="ss-panel">
+    <div class="ss-grid">
+      <div class="seesaw-stage">
+        <div class="graph-title">Moving See-Saw</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center;">When one side rises, the other usually falls.</div>
+        <div class="seesaw-wrap">
+          <div class="ss-weight ss-inf">Inflation<strong id="inf-readout">5.0%</strong></div>
+          <div class="ss-weight ss-unem">Unemployment<strong id="unem-readout">5.0%</strong></div>
+          <div class="seesaw-beam" id="ss-beam"></div>
+          <div class="seesaw-pivot"></div>
+        </div>
+      </div>
+
+      <div class="graph-box">
+        <div class="graph-title">Phillips Curve Interaction</div>
+        <svg viewBox="0 0 360 230" width="100%" height="210" aria-label="Phillips Curve graph">
+          <line x1="45" y1="185" x2="330" y2="185" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <line x1="45" y1="185" x2="45" y2="25" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <text x="185" y="218" text-anchor="middle" fill="#999" font-size="11" font-family="Space Mono">UNEMPLOYMENT →</text>
+          <text x="15" y="110" text-anchor="middle" fill="#999" font-size="11" font-family="Space Mono" transform="rotate(-90 15 110)">INFLATION ↑</text>
+          <path d="M65 48 C115 52 155 80 190 112 C230 150 270 174 320 182" fill="none" stroke="#f7c948" stroke-width="4" stroke-linecap="round"/>
+          <circle id="pc-point" cx="185" cy="112" r="9" fill="#ff6b4a" stroke="#fff" stroke-width="2"/>
+          <text id="pc-label" x="197" y="103" fill="#f4f4f4" font-size="11" font-family="Space Mono">5.0%, 5.0%</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="slider-box">
+      <div class="graph-title">Move the unemployment rate</div>
+      <div class="slider-row">
+        <span style="font-family:'Space Mono',monospace;color:var(--accent2);font-size:0.75rem;">Low unemployment</span>
+        <input type="range" min="3" max="10" step="0.5" value="5" id="unem-slider" oninput="updateSeeSaw()">
+        <span style="font-family:'Space Mono',monospace;color:var(--accent);font-size:0.75rem;">High unemployment</span>
+      </div>
+      <div class="live-readout">
+        <div class="readout-card"><span>Inflation Pressure</span><strong style="color:var(--accent)" id="inflation-live">5.0%</strong></div>
+        <div class="readout-card"><span>Unemployment Rate</span><strong style="color:var(--accent2)" id="unemployment-live">5.0%</strong></div>
+      </div>
+    </div>
+
+    <div class="scenario-checks">
+      <div class="scenario-card">
+        <h3>Check 1</h3>
+        <p>Move the slider left until unemployment is low.</p>
+        <button class="mini-btn" onclick="checkSSLow()">Check Low Unemployment</button>
+        <div class="ss-status" id="ss-low-status">Not complete</div>
+      </div>
+
+      <div class="scenario-card">
+        <h3>Check 2</h3>
+        <p>Move the slider right until unemployment is high.</p>
+        <button class="mini-btn" onclick="checkSSHigh()">Check High Unemployment</button>
+        <div class="ss-status" id="ss-high-status">Not complete</div>
+      </div>
+
+      <div class="scenario-card">
+        <h3>Takeaway</h3>
+        <p>Pick the main idea.</p>
+        <select class="takeaway-select" id="ss-takeaway">
+          <option value="">Choose...</option>
+          <option value="both">The government can always lower inflation and unemployment at the same time.</option>
+          <option value="tradeoff">Pushing one problem down can make the other problem worse.</option>
+          <option value="none">Inflation and unemployment are unrelated.</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="check-btn" onclick="finishSS()">Finish See-Saw Activity</button>
+    <div id="ss-fb" style="text-align:center;font-weight:700;font-size:0.9rem;min-height:1.4rem;"></div>
+  </div>
+</div>
+
+<div class="rs-game" id="rs-game">
+  <div class="sec-title">Results Checkpoint</div>
+  <div class="sec-desc">Complete the three core activities before moving to flashcards and the quiz.</div>
+  <div class="rs-card">
+    <div class="rs-title">Core Review Complete</div>
+    <p style="color:var(--muted);line-height:1.55;">You reviewed unemployment types, unemployment-rate blind spots, and the inflation-unemployment tradeoff.</p>
+    <div class="rs-grid">
+      <div class="rs-mini"><h3 id="rs-ut">Activity 1</h3><p>Classify frictional, structural, and cyclical unemployment.</p></div>
+      <div class="rs-mini"><h3 id="rs-ct">Activity 2</h3><p>Identify who is counted in the official unemployment rate.</p></div>
+      <div class="rs-mini"><h3 id="rs-ss">Activity 3</h3><p>Use the see-saw and Phillips Curve to explain the tradeoff.</p></div>
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:1.25rem;color:var(--accent);font-weight:700;margin-bottom:1rem;">
+      Correct: <span id="final-c">0</span> · Wrong: <span id="final-w">0</span>
+    </div>
+    <div class="unlock-row">
+      <button class="check-btn" style="margin:0;" onclick="unlockReview()">Unlock Flashcards + Quiz</button>
+      <button class="check-btn" style="margin:0;background:var(--accent2);color:white;" onclick="sw('ut')">Review Again</button>
+    </div>
+  </div>
+</div>
+
 <div class="fl-game" id="fl-game">
   <div class="sec-title">Key Terms</div>
   <div class="sec-desc">Cards shuffle every time. Click to flip.</div>
@@ -211,7 +352,38 @@
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 var gC=0,gW=0,gS=0;
 function addScore(ok){if(ok){gC++;gS++;}else{gW++;gS=0;}document.getElementById('sc-c').textContent=gC;document.getElementById('sc-w').textContent=gW;document.getElementById('sc-s').textContent=gS;}
-function sw(m){['ut','ct','fl','mc'].forEach(function(id){document.getElementById(id+'-game').classList.remove('active');});document.getElementById(m+'-game').classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',['ut','ct','fl','mc'][i]===m);});}
+var coreDone={ut:false,ct:false,ss:false};
+var reviewUnlocked=false;
+var ssLow=false, ssHigh=false;
+
+function updateResults(){
+  document.getElementById('final-c').textContent=gC;
+  document.getElementById('final-w').textContent=gW;
+  document.getElementById('rs-ut').textContent=(coreDone.ut?'✅ ':'⬜ ')+'Activity 1';
+  document.getElementById('rs-ct').textContent=(coreDone.ct?'✅ ':'⬜ ')+'Activity 2';
+  document.getElementById('rs-ss').textContent=(coreDone.ss?'✅ ':'⬜ ')+'Activity 3';
+}
+
+function sw(m){
+  if((m==='fl'||m==='mc')&&!reviewUnlocked){m='rs';}
+  ['ut','ct','ss','rs','fl','mc'].forEach(function(id){document.getElementById(id+'-game').classList.remove('active');});
+  document.getElementById(m+'-game').classList.add('active');
+  updateResults();
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',['ut','ct','ss','rs','fl','mc'][i]===m);});
+}
+
+function markCore(name){
+  coreDone[name]=true;
+  updateResults();
+  if(coreDone.ut && coreDone.ct && coreDone.ss){setTimeout(function(){sw('rs');},600);}
+}
+
+function unlockReview(){
+  reviewUnlocked=true;
+  document.getElementById('fl-tab').classList.remove('locked');
+  document.getElementById('mc-tab').classList.remove('locked');
+  sw('fl');
+}
 
 var SCENS=[
   {id:'s1',text:'Maria just graduated and is applying for her first marketing job',type:'frictional'},
@@ -226,7 +398,7 @@ function initUT(){
   utSel=null;utPlaced={frictional:[],structural:[],cyclical:[]};
   var shuffled=shuffle(SCENS);
   var el=document.getElementById('scen-list');el.innerHTML='';
-  shuffled.forEach(function(s){var d=document.createElement('div');d.className='scen-chip';d.id='sc-'+s.id;d.textContent=s.text;d.onclick=function(){pickScen(s.id);};el.appendChild(d);});
+  shuffled.forEach(function(s){var d=document.createElement('div');d.className='scen-chip';d.id='sc-'+s.id;d.textContent=s.text;d.setAttribute('draggable','true');d.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',s.id);e.dataTransfer.setData('source','ut');e.dataTransfer.effectAllowed='move';});d.onclick=function(){pickScen(s.id);};el.appendChild(d);});
   ['frictional','structural','cyclical'].forEach(function(z){document.getElementById('uz-'+z).innerHTML='';});
   document.getElementById('ut-sel').textContent='none — click a scenario first';document.getElementById('ut-sel').style.color='var(--muted)';
   document.getElementById('ut-fb').innerHTML='';document.getElementById('ut-rb').style.display='none';
@@ -252,7 +424,7 @@ function checkUT(){
   if(!all){document.getElementById('ut-fb').innerHTML='<div style="color:var(--accent);text-align:center;font-size:0.82rem;margin-top:0.5rem">Place all scenarios first.</div>';return;}
   var html='';var num=0;
   SCENS.forEach(function(s){var placed=['frictional','structural','cyclical'].find(function(z){return utPlaced[z].indexOf(s.id)>-1;});var ok=placed===s.type;if(ok)num++;html+='<div class="result-row '+(ok?'ok':'bad')+'">'+(ok?'OK':'Should be '+s.type.toUpperCase())+': '+s.text+'</div>';});
-  document.getElementById('ut-fb').innerHTML=html;addScore(num===SCENS.length);document.getElementById('ut-rb').style.display='block';
+  document.getElementById('ut-fb').innerHTML=html;addScore(num===SCENS.length);markCore('ut');document.getElementById('ut-rb').style.display='block';
 }
 function resetUT(){initUT();}
 
@@ -269,7 +441,7 @@ function initCT(){
   ctSel=null;ctPlaced={yes:[],no:[]};
   var shuffled=shuffle(WKRS);
   var el=document.getElementById('worker-list');el.innerHTML='';
-  shuffled.forEach(function(w){var d=document.createElement('button');d.className='wkr-chip';d.id='wc-'+w.id;d.textContent=w.text;d.onclick=function(){pickWkr(w.id);};el.appendChild(d);});
+  shuffled.forEach(function(w){var d=document.createElement('button');d.className='wkr-chip';d.id='wc-'+w.id;d.textContent=w.text;d.setAttribute('draggable','true');d.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',w.id);e.dataTransfer.setData('source','ct');e.dataTransfer.effectAllowed='move';});d.onclick=function(){pickWkr(w.id);};el.appendChild(d);});
   ['yes','no'].forEach(function(z){document.getElementById('cz-'+z).innerHTML='';});
   document.getElementById('ct-sel').textContent='none — click a worker first';document.getElementById('ct-sel').style.color='var(--muted)';
   document.getElementById('ct-fb').innerHTML='';document.getElementById('ct-rb').style.display='none';
@@ -295,9 +467,131 @@ function checkCT(){
   if(!all){document.getElementById('ct-fb').innerHTML='<div style="color:var(--accent);text-align:center;font-size:0.82rem;margin-top:0.5rem">Place all workers first.</div>';return;}
   var html='';var num=0;
   WKRS.forEach(function(w){var placed=['yes','no'].find(function(z){return ctPlaced[z].indexOf(w.id)>-1;});var ok=placed===w.ans;if(ok)num++;var lbl=w.ans==='yes'?'COUNTED':'NOT COUNTED';html+='<div class="result-row '+(ok?'ok':'bad')+'">'+(ok?lbl:'Should be '+lbl)+': '+w.text+'</div>';});
-  document.getElementById('ct-fb').innerHTML=html;addScore(num===WKRS.length);document.getElementById('ct-rb').style.display='block';
+  document.getElementById('ct-fb').innerHTML=html;addScore(num===WKRS.length);markCore('ct');document.getElementById('ct-rb').style.display='block';
 }
 function resetCT(){initCT();}
+
+function setupUTDragDrop(){
+  ['frictional','structural','cyclical'].forEach(function(zoneName){
+    var zone=document.getElementById('uz-'+zoneName);
+    if(!zone || zone.dataset.dragReady==='true')return;
+    zone.dataset.dragReady='true';
+
+    zone.addEventListener('dragover',function(e){
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
+
+    zone.addEventListener('dragleave',function(){
+      zone.classList.remove('drag-over');
+    });
+
+    zone.addEventListener('drop',function(e){
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      var source=e.dataTransfer.getData('source');
+      var sid=e.dataTransfer.getData('text/plain');
+      if(source!=='ut' || !sid)return;
+      var chip=document.getElementById('sc-'+sid);
+      if(!chip || chip.classList.contains('sc-used'))return;
+      utSel=sid;
+      placeScen(zoneName);
+    });
+  });
+}
+
+function setupCTDragDrop(){
+  ['yes','no'].forEach(function(zoneName){
+    var zone=document.getElementById('cz-'+zoneName);
+    if(!zone || zone.dataset.dragReady==='true')return;
+    zone.dataset.dragReady='true';
+
+    zone.addEventListener('dragover',function(e){
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
+
+    zone.addEventListener('dragleave',function(){
+      zone.classList.remove('drag-over');
+    });
+
+    zone.addEventListener('drop',function(e){
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      var source=e.dataTransfer.getData('source');
+      var wid=e.dataTransfer.getData('text/plain');
+      if(source!=='ct' || !wid)return;
+      var chip=document.getElementById('wc-'+wid);
+      if(!chip || chip.classList.contains('wk-used'))return;
+      ctSel=wid;
+      placeWkr(zoneName);
+    });
+  });
+}
+
+function updateSeeSaw(){
+  var u=parseFloat(document.getElementById('unem-slider').value);
+  var inf=Math.max(2,Math.min(8,9-u));
+  var angle=(u-6.5)*3.2;
+
+  document.getElementById('unemployment-live').textContent=u.toFixed(1)+'%';
+  document.getElementById('inflation-live').textContent=inf.toFixed(1)+'%';
+  document.getElementById('unem-readout').textContent=u.toFixed(1)+'%';
+  document.getElementById('inf-readout').textContent=inf.toFixed(1)+'%';
+  document.getElementById('ss-beam').style.transform='translateX(-50%) rotate('+angle+'deg)';
+
+  var x=65+((u-3)/7)*255;
+  var y=185-((inf-2)/6)*137;
+  document.getElementById('pc-point').setAttribute('cx',x);
+  document.getElementById('pc-point').setAttribute('cy',y);
+  document.getElementById('pc-label').setAttribute('x',x+12);
+  document.getElementById('pc-label').setAttribute('y',y-8);
+  document.getElementById('pc-label').textContent=u.toFixed(1)+'%, '+inf.toFixed(1)+'%';
+}
+
+function checkSSLow(){
+  var u=parseFloat(document.getElementById('unem-slider').value);
+  if(u<=4.5){
+    ssLow=true;
+    document.getElementById('ss-low-status').textContent='✅ Complete';
+    document.getElementById('ss-low-status').style.color='var(--correct)';
+    addScore(true);
+  }else{
+    document.getElementById('ss-low-status').textContent='Move unemployment lower first.';
+    document.getElementById('ss-low-status').style.color='var(--wrong)';
+    addScore(false);
+  }
+}
+
+function checkSSHigh(){
+  var u=parseFloat(document.getElementById('unem-slider').value);
+  if(u>=7.5){
+    ssHigh=true;
+    document.getElementById('ss-high-status').textContent='✅ Complete';
+    document.getElementById('ss-high-status').style.color='var(--correct)';
+    addScore(true);
+  }else{
+    document.getElementById('ss-high-status').textContent='Move unemployment higher first.';
+    document.getElementById('ss-high-status').style.color='var(--wrong)';
+    addScore(false);
+  }
+}
+
+function finishSS(){
+  var takeaway=document.getElementById('ss-takeaway').value;
+  if(!ssLow || !ssHigh || takeaway===''){
+    document.getElementById('ss-fb').innerHTML='<span style="color:var(--accent)">Complete both see-saw checks and choose a takeaway.</span>';
+    return;
+  }
+  if(takeaway==='tradeoff'){
+    document.getElementById('ss-fb').innerHTML='<span style="color:var(--correct)">✅ Correct — the Phillips Curve shows a tradeoff, not a clean fix.</span>';
+    addScore(true);
+  }else{
+    document.getElementById('ss-fb').innerHTML='<span style="color:var(--wrong)">Not quite — the key idea is that pushing one problem down can make the other worse.</span>';
+    addScore(false);
+  }
+  markCore('ss');
+}
 
 var CARDS=shuffle([
   {t:'Inflation',d:'A sustained rise in the general price level across the whole economy.'},
@@ -347,7 +641,7 @@ function nxt(qi){
   else{var d=document.getElementById('qz-done');d.classList.add('show');document.getElementById('fin-sc').textContent=mcSc+'/'+SQ.length;document.getElementById('fin-msg').textContent=['Keep at it — review the terms.','Getting there!','Solid work!','Almost perfect!','Perfect! L3 locked.'][mcSc-1]||'';d.scrollIntoView({behavior:'smooth'});}
 }
 function restartQuiz(){initQuiz();}
-initUT();initCT();renderCard();initQuiz();
+initUT();initCT();setupUTDragDrop();setupCTDragDrop();updateSeeSaw();renderCard();initQuiz();
 </script>
 </body>
 </html>
