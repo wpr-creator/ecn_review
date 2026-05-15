@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Economics Final Review — Mr. Rogers' Red 40</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #0b1628;
+  --navy-dark:  #07101d;
+  --navy-mid:   #112240;
+  --navy-card:  #0d1f3c;
+  --blue:       #1e4d8c;
+  --blue-bright:#2e6fcc;
+  --blue-glow:  #4a90e2;
+  --gold:       #c9a84c;
+  --gold-bright:#f0cc6e;
+  --gold-pale:  #fdf3d0;
+  --cream:      #e8eef8;
+  --white:      #ffffff;
+  --red:        #c0392b;
+  --ink:        #0b1628;
+  --text-dim:   rgba(200,220,255,0.5);
+  --text-mid:   rgba(200,220,255,0.75);
+  --border:     rgba(74,144,226,0.18);
+  --border-gold:rgba(201,168,76,0.25);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--navy-dark);
+  color: var(--cream);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(74,144,226,0.025) 81px),
+    repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(74,144,226,0.025) 81px);
+  pointer-events:none; z-index:0;
+}
+body::after {
+  content:'';
+  position:fixed;
+  top:-20%; left:50%;
+  transform:translateX(-50%);
+  width:1100px; height:700px;
+  background:radial-gradient(ellipse, rgba(14,42,90,0.6) 0%, transparent 70%);
+  pointer-events:none; z-index:0;
+}
+
+.wrap {
+  position:relative; z-index:1;
+  max-width:1020px;
+  margin:0 auto;
+  padding:0 2rem 6rem;
+}
+
+/* ── HEADER ── */
+header {
+  padding-top:3.5rem;
+  text-align:center;
+}
+
+.back-link {
+  display:inline-flex;
+  align-items:center;
+  gap:0.5rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--gold);
+  text-decoration:none;
+  margin-bottom:2rem;
+  opacity:0.75;
+  transition:opacity 0.2s;
+}
+.back-link:hover { opacity:1; }
+
+.seal {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:76px; height:76px;
+  border-radius:50%;
+  background:var(--blue);
+  border:3px solid var(--blue-bright);
+  font-size:2.1rem;
+  margin-bottom:1.5rem;
+  box-shadow:0 0 0 6px rgba(74,144,226,0.12), 0 0 40px rgba(46,111,204,0.3);
+  animation:pulse-seal 3s ease-in-out infinite;
+}
+@keyframes pulse-seal {
+  0%,100%{box-shadow:0 0 0 6px rgba(74,144,226,0.12), 0 0 40px rgba(46,111,204,0.3);}
+  50%{box-shadow:0 0 0 14px rgba(74,144,226,0.05), 0 0 70px rgba(46,111,204,0.5);}
+}
+
+.eyebrow {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:0.75rem;
+}
+
+.main-title {
+  font-family:'Playfair Display',serif;
+  font-weight:900;
+  font-size:clamp(2.4rem,6vw,4.8rem);
+  line-height:0.95;
+  color:var(--white);
+  text-shadow:0 4px 40px rgba(0,0,0,0.6);
+  margin-bottom:0.4rem;
+}
+.main-title .blue-word { color:var(--blue-glow); }
+.main-title .gold-word { color:var(--gold-bright); }
+
+.tagline {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(0.9rem,2vw,1.2rem);
+  font-weight:600;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin-top:1rem;
+}
+
+.bill-divider {
+  display:flex; align-items:center; gap:1rem;
+  margin:2.5rem 0 1.5rem;
+}
+.bill-divider .line {
+  flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,var(--blue-bright),transparent);
+}
+.bill-divider .inner {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--blue-glow);
+  white-space:nowrap;
+}
+
+/* ── UNIT ACCORDION ── */
+.unit-block {
+  margin-bottom:1.5rem;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--navy-card);
+  transition:border-color 0.3s;
+}
+.unit-block.open { border-color:rgba(74,144,226,0.45); }
+
+.unit-header {
+  display:flex;
+  align-items:center;
+  gap:1.25rem;
+  padding:1.5rem 1.75rem;
+  cursor:pointer;
+  user-select:none;
+  position:relative;
+  transition:background 0.2s;
+}
+.unit-header:hover { background:rgba(74,144,226,0.06); }
+
+.unit-icon {
+  font-size:2rem;
+  flex-shrink:0;
+  line-height:1;
+}
+
+.unit-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.62rem;
+  font-weight:700;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:0.3rem;
+}
+
+.unit-name {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.55rem;
+  font-weight:800;
+  line-height:1;
+  color:var(--white);
+  letter-spacing:0.02em;
+}
+
+.unit-count {
+  margin-left:auto;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  flex-shrink:0;
+}
+
+.chevron {
+  flex-shrink:0;
+  width:28px; height:28px;
+  border-radius:50%;
+  background:rgba(74,144,226,0.1);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.75rem;
+  color:var(--blue-glow);
+  transition:transform 0.3s, background 0.2s;
+}
+.unit-block.open .chevron {
+  transform:rotate(180deg);
+  background:rgba(74,144,226,0.2);
+}
+
+/* ── LESSON TABS ── */
+.unit-body {
+  display:none;
+  border-top:1px solid var(--border);
+}
+.unit-block.open .unit-body { display:block; }
+
+.tab-nav {
+  display:flex;
+  overflow-x:auto;
+  gap:0;
+  background:rgba(0,0,0,0.2);
+  border-bottom:1px solid var(--border);
+  scrollbar-width:none;
+}
+.tab-nav::-webkit-scrollbar { display:none; }
+
+.tab-btn {
+  flex-shrink:0;
+  padding:0.85rem 1.3rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  background:none;
+  border:none;
+  border-bottom:2px solid transparent;
+  cursor:pointer;
+  transition:color 0.2s, border-color 0.2s;
+  white-space:nowrap;
+}
+.tab-btn:hover { color:var(--cream); }
+.tab-btn.active {
+  color:var(--blue-glow);
+  border-bottom-color:var(--blue-glow);
+}
+
+/* ── LESSON CONTENT ── */
+.lesson-panel { display:none; padding:2rem 1.75rem 2.25rem; }
+.lesson-panel.active { display:block; }
+
+.lesson-eq {
+  display:flex;
+  align-items:flex-start;
+  gap:0.75rem;
+  background:rgba(74,144,226,0.08);
+  border:1px solid rgba(74,144,226,0.2);
+  border-left:3px solid var(--blue-bright);
+  border-radius:8px;
+  padding:1rem 1.25rem;
+  margin-bottom:1.75rem;
+}
+.lesson-eq .eq-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--blue-glow);
+  flex-shrink:0;
+  margin-top:2px;
+}
+.lesson-eq .eq-text {
+  font-size:0.88rem;
+  line-height:1.5;
+  color:var(--cream);
+  font-style:italic;
+}
+
+.core-answer {
+  background:rgba(201,168,76,0.07);
+  border:1px solid var(--border-gold);
+  border-radius:10px;
+  padding:1.1rem 1.25rem;
+  margin-bottom:1.75rem;
+}
+.core-answer .ca-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:0.4rem;
+}
+.core-answer .ca-text {
+  font-size:0.9rem;
+  line-height:1.6;
+  color:var(--gold-pale);
+  font-weight:500;
+}
+
+/* Language bridge */
+.lang-bridge {
+  margin-bottom:1.75rem;
+}
+.lang-bridge-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin-bottom:0.6rem;
+}
+.lang-grid {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.4rem;
+}
+.lang-pill {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.7rem;
+  font-weight:600;
+  background:rgba(30,77,140,0.35);
+  border:1px solid rgba(74,144,226,0.2);
+  border-radius:20px;
+  padding:0.25rem 0.7rem;
+  color:var(--text-mid);
+  white-space:nowrap;
+}
+.lang-pill strong { color:var(--cream); }
+.lang-pill span { color:var(--text-dim); }
+
+/* Section blocks */
+.section-block {
+  margin-bottom:1.75rem;
+  padding-bottom:1.75rem;
+  border-bottom:1px solid rgba(74,144,226,0.1);
+}
+.section-block:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+
+.section-title {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.05rem;
+  font-weight:800;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--white);
+  margin-bottom:0.65rem;
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+}
+.section-title::before {
+  content:'';
+  display:inline-block;
+  width:4px; height:18px;
+  background:var(--blue-bright);
+  border-radius:2px;
+  flex-shrink:0;
+}
+
+.section-body {
+  font-size:0.88rem;
+  line-height:1.7;
+  color:var(--text-mid);
+  margin-bottom:1rem;
+}
+
+.power-box {
+  background:rgba(11,22,40,0.6);
+  border:1px solid rgba(74,144,226,0.15);
+  border-left:3px solid var(--gold);
+  border-radius:6px;
+  padding:0.85rem 1rem;
+  margin-bottom:1rem;
+}
+.power-box .pb-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.58rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:0.35rem;
+}
+.power-box .pb-text {
+  font-size:0.83rem;
+  line-height:1.6;
+  color:rgba(200,220,255,0.65);
+}
+
+/* Term cards */
+.terms-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
+  gap:0.6rem;
+}
+.term-card {
+  background:rgba(14,31,60,0.7);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0.8rem 1rem;
+  transition:border-color 0.2s, background 0.2s;
+}
+.term-card:hover {
+  border-color:rgba(74,144,226,0.4);
+  background:rgba(14,31,60,0.95);
+}
+.term-name {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--blue-glow);
+  margin-bottom:0.35rem;
+}
+.term-def {
+  font-size:0.82rem;
+  line-height:1.5;
+  color:var(--text-mid);
+}
+
+/* recap */
+.recap-box {
+  background:rgba(30,77,140,0.15);
+  border:1px solid rgba(74,144,226,0.25);
+  border-radius:10px;
+  padding:1.1rem 1.25rem;
+  margin-top:1.75rem;
+}
+.recap-box .recap-label {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--blue-glow);
+  margin-bottom:0.5rem;
+}
+.recap-box ul {
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:0.35rem;
+}
+.recap-box ul li {
+  font-size:0.85rem;
+  line-height:1.55;
+  color:var(--text-mid);
+  padding-left:1.1rem;
+  position:relative;
+}
+.recap-box ul li::before {
+  content:'→';
+  position:absolute;
+  left:0;
+  color:var(--blue-bright);
+  font-size:0.75rem;
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  background:var(--blue);
+  overflow:hidden;
+  white-space:nowrap;
+  padding:0.55rem 0;
+  border-radius:8px;
+  margin-top:2rem;
+}
+.ticker-inner {
+  display:inline-block;
+  animation:ticker 36s linear infinite;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--white);
+}
+.ticker-inner span { margin:0 2rem; }
+.ticker-inner .bull { color:var(--gold-bright); }
+.ticker-inner .sym { opacity:0.35; }
+@keyframes ticker {
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+
+footer {
+  text-align:center;
+  margin-top:4rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.68rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(74,144,226,0.3);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.anim { opacity:0; animation:fadeUp 0.55s ease forwards; }
+.d1{animation-delay:0.05s;} .d2{animation-delay:0.15s;}
+.d3{animation-delay:0.25s;} .d4{animation-delay:0.35s;}
+.d5{animation-delay:0.45s;} .d6{animation-delay:0.55s;}
+
+@media(max-width:600px){
+  .unit-header{padding:1.25rem;}
+  .lesson-panel{padding:1.5rem 1.25rem;}
+  .terms-grid{grid-template-columns:1fr;}
+  .tab-btn{padding:0.75rem 1rem;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a class="back-link anim d1" href="index.html">← Back to Main Site</a>
+    <div class="seal anim d2">📘</div>
+    <div class="eyebrow anim d2">Final Exam Review · All Units</div>
+    <h1 class="main-title anim d3">
+      <span class="blue-word">Economics</span><br>
+      <span class="gold-word">Review Guide</span>
+    </h1>
+    <p class="tagline anim d4">Units 1 – 4 · Lesson by Lesson · Use Your Notes</p>
+  </header>
+
+  <div class="bill-divider anim d5">
+    <div class="line"></div>
+    <div class="inner">Open a Unit · Pick a Lesson · Study One Section at a Time</div>
+    <div class="line"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       UNIT 1
+  ════════════════════════════════════════════════ -->
+  <div class="unit-block anim d5" id="unit1">
+    <div class="unit-header" onclick="toggleUnit('unit1')">
+      <span class="unit-icon">💎</span>
+      <div>
+        <div class="unit-label">Unit 1</div>
+        <div class="unit-name">Foundations of Economics</div>
+      </div>
+      <div class="unit-count">5 Lessons</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="unit-body">
+      <div class="tab-nav" id="tabs-unit1">
+        <button class="tab-btn active" onclick="switchTab('unit1',0)">L1 · Value Paradox</button>
+        <button class="tab-btn" onclick="switchTab('unit1',1)">L2 · Satisfaction Scale</button>
+        <button class="tab-btn" onclick="switchTab('unit1',2)">L3 · Four Factors</button>
+        <button class="tab-btn" onclick="switchTab('unit1',3)">L4 · Big Three</button>
+        <button class="tab-btn" onclick="switchTab('unit1',4)">L5 · Production Frontier</button>
+      </div>
+
+      <!-- U1 L1 -->
+      <div class="lesson-panel active" id="unit1-panel-0">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How does scarcity determine the value and cost of our daily decisions?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Scarcity forces us to make choices, and those choices change the value of objects based on our immediate survival or desire.</div>
+        </div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Scarcity</strong> <span>· Escasez</span></span>
+            <span class="lang-pill"><strong>Economics</strong> <span>· Economía</span></span>
+            <span class="lang-pill"><strong>Need</strong> <span>· Necesidad</span></span>
+            <span class="lang-pill"><strong>Want</strong> <span>· Deseo</span></span>
+            <span class="lang-pill"><strong>Opportunity Cost</strong> <span>· Costo de Oportunidad</span></span>
+            <span class="lang-pill"><strong>TINSTAAFL</strong> <span>· No Hay Almuerzo Gratis</span></span>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. Scarcity and the Rule of Economics</div>
+          <div class="section-body">The world has a physical limit. Human desires are infinite, but the earth has limited resources. We call this permanent condition scarcity. Because we cannot have everything we desire, we are forced to make choices. The study of how people and nations make these choices is called economics.</div>
+          <div class="power-box">
+            <div class="pb-label">Power &amp; Reality</div>
+            <div class="pb-text">Nature controls the board. Governments can print unlimited paper money, but they cannot print more time, water, or land. The people who control the scarce resources hold the power.</div>
+          </div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Scarcity</div><div class="term-def">The permanent condition where human wants exceed available resources.</div></div>
+            <div class="term-card"><div class="term-name">Economics</div><div class="term-def">The study of how people and nations make choices to satisfy wants with limited resources.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Adam Smith Gamble and Value</div>
+          <div class="section-body">Adam Smith posed a riddle: in a city, water is cheap and diamonds are expensive. In a desert, the diamond becomes worthless and the water becomes priceless. The objects never changed — the context changed. Scarcity forced a shift from a want to a need.</div>
+          <div class="power-box">
+            <div class="pb-label">Power &amp; Reality</div>
+            <div class="pb-text">Value is an illusion created by location and desperation. Sellers make the most profit when buyers are desperate. If you are trapped in a desert, the person with the water holds all the power and dictates the price.</div>
+          </div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Need</div><div class="term-def">Something essential for survival like water or shelter.</div></div>
+            <div class="term-card"><div class="term-name">Want</div><div class="term-def">Something desired for satisfaction but not required for life like diamonds or luxury.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. Opportunity Cost and Hidden Prices</div>
+          <div class="section-body">Every choice destroys another option. When you choose to sleep, you destroy the chance to study. The next best alternative you sacrifice is your opportunity cost. Nothing is truly free — even a pizza party with a zero dollar price tag required labor and ingredients. This rule is known as TINSTAAFL.</div>
+          <div class="power-box">
+            <div class="pb-label">Power &amp; Reality</div>
+            <div class="pb-text">Time is the ultimate currency. A missed shift at work means different things depending on where you sit on the income ladder. Every action consumes resources, and someone always pays the bill.</div>
+          </div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Opportunity Cost</div><div class="term-def">The value of the next best alternative sacrificed when a choice is made.</div></div>
+            <div class="term-card"><div class="term-name">TINSTAAFL</div><div class="term-def">There Is No Such Thing As A Free Lunch — every choice consumes resources.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U1 L2 -->
+      <div class="lesson-panel" id="unit1-panel-1">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How does marginal analysis help us determine the rational point to stop?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Marginal analysis allows us to maximize our happiness and avoid loss by stopping the exact moment the cost of our next action outweighs its actual benefit.</div>
+        </div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Utility</strong> <span>· Utilidad</span></span>
+            <span class="lang-pill"><strong>Marginal Utility</strong> <span>· Utilidad Marginal</span></span>
+            <span class="lang-pill"><strong>Price</strong> <span>· Precio</span></span>
+            <span class="lang-pill"><strong>Marginal Analysis</strong> <span>· Análisis Marginal</span></span>
+            <span class="lang-pill"><strong>Willingness to Pay</strong> <span>· Disposición a Pagar</span></span>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Anatomy of Value</div>
+          <div class="section-body">Rational decision-making requires looking past the price tag to measure the actual human satisfaction a product provides. Economists measure personal happiness using a unit called a util.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">Businesses want you to confuse price with value. The winner is the consumer who knows their true satisfaction level. The loser buys an item just because a price is low and suffers negative utility.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Utility</div><div class="term-def">The specific amount of satisfaction or happiness gained from a good.</div></div>
+            <div class="term-card"><div class="term-name">Util</div><div class="term-def">The imaginary unit economists use to measure a specific amount of happiness.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Law of Diminishing Marginal Utility</div>
+          <div class="section-body">The first unit of any good always provides the highest level of satisfaction. As you consume more of that exact same good, your marginal utility inevitably drops. Every single additional unit brings less joy than the one right before it.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">Corporations design products like endless social media feeds and all-you-can-eat buffets to keep your attention and money flowing. You lose your time or health when you ignore these diminishing returns.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Marginal Utility</div><div class="term-def">The extra satisfaction obtained from consuming just one more unit.</div></div>
+            <div class="term-card"><div class="term-name">Law of Diminishing Marginal Utility</div><div class="term-def">As you consume more, the satisfaction from the next unit decreases.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. The Rational Rule of Decision Making</div>
+          <div class="section-body">Rational people make decisions at the margin. They compare the benefit of the next step against the cost of the next step. You follow the rational rule and continue your action as long as the benefit is greater than or equal to the cost. The exact moment the cost outweighs the benefit, you stop.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Marginal Analysis</div><div class="term-def">Weighing the additional costs against the additional benefits of the next step.</div></div>
+            <div class="term-card"><div class="term-name">The Rational Rule</div><div class="term-def">Do an action if the benefit is greater than or equal to the cost.</div></div>
+            <div class="term-card"><div class="term-name">Willingness to Pay</div><div class="term-def">The maximum amount a consumer is willing to pay.</div></div>
+            <div class="term-card"><div class="term-name">Price</div><div class="term-def">The actual financial cost of the good.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U1 L3 -->
+      <div class="lesson-panel" id="unit1-panel-2">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">What are the essential ingredients required to create wealth and how do they interact?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Wealth requires taking natural resources and combining them with human effort, tools, and a risk-taker to build something valuable.</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Problem and the Process</div>
+          <div class="section-body">The economy exists because of scarcity. To get what we want, we must use production to turn raw materials into valuable goods and services. Goods are physical objects that satisfy needs or wants. Services are actions performed for someone else.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Production</div><div class="term-def">The process of combining resources to create goods and services.</div></div>
+            <div class="term-card"><div class="term-name">Goods</div><div class="term-def">Physical objects that satisfy needs or wants, such as a pencil or a burger.</div></div>
+            <div class="term-card"><div class="term-name">Services</div><div class="term-def">Actions or work performed for someone else, such as a haircut or a legal defense.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Physical Ingredients</div>
+          <div class="section-body">Land includes everything pulled directly from nature. Labor is the actual human effort required. Workers can improve their value by increasing their human capital through education or training. Capital is the physical tools workers need to be efficient.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">Workers trade their time for a fixed paycheck, but the owners of the land and the machines keep the long-term wealth. Owners constantly seek to replace human workers with better machines.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Factors of Production</div><div class="term-def">The four essential ingredients used to produce all goods and services.</div></div>
+            <div class="term-card"><div class="term-name">Land</div><div class="term-def">Natural resources found in nature, such as trees, water, oil, or animals.</div></div>
+            <div class="term-card"><div class="term-name">Labor</div><div class="term-def">Human effort, both mental and physical, used to produce goods and services.</div></div>
+            <div class="term-card"><div class="term-name">Capital</div><div class="term-def">Man-made tools, machines, and structures used to produce other goods.</div></div>
+            <div class="term-card"><div class="term-name">Human Capital</div><div class="term-def">The skills, knowledge, and education a worker has to improve the quality of labor.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. The Spark and the Trap</div>
+          <div class="section-body">The physical ingredients sit useless without entrepreneurship. The founder takes the risk to combine the other factors and drives innovation. Money is simply financial capital — you cannot hammer a nail with a dollar bill. You must use the money to buy the real tools.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Entrepreneurship</div><div class="term-def">The vision, risk-taking, and organization required to combine the other three factors.</div></div>
+            <div class="term-card"><div class="term-name">Innovation</div><div class="term-def">Improving a product or process — a key role of the entrepreneur.</div></div>
+            <div class="term-card"><div class="term-name">Financial Capital</div><div class="term-def">Money used to invest or buy tools. Not a factor of production because money produces nothing on its own.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U1 L4 -->
+      <div class="lesson-panel" id="unit1-panel-3">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How do societies decide what to produce, how to produce, and for whom to produce?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Every nation must choose between the government control of a command economy or the individual freedom of a market economy to solve the problem of scarcity.</div>
+        </div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Command Economy</strong> <span>· Economía Dirigida</span></span>
+            <span class="lang-pill"><strong>Market Economy</strong> <span>· Economía de Mercado</span></span>
+            <span class="lang-pill"><strong>Mixed Economy</strong> <span>· Economía Mixta</span></span>
+            <span class="lang-pill"><strong>Private Property</strong> <span>· Propiedad Privada</span></span>
+            <span class="lang-pill"><strong>Shortage</strong> <span>· Desabastecimiento</span></span>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Command System</div>
+          <div class="section-body">In a command economy, central planners make all the decisions and own the resources. The government decides what is made and who receives it to maintain economic security. Because there are no market signals, planners often guess wrong and create a shortage of goods.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Command Economy</div><div class="term-def">A system where the central government makes all economic decisions.</div></div>
+            <div class="term-card"><div class="term-name">Economic Security</div><div class="term-def">A system goal that prioritizes stability, guaranteed employment, and a government safety net.</div></div>
+            <div class="term-card"><div class="term-name">Shortage</div><div class="term-def">A situation where the quantity demanded for a good is much higher than the quantity supplied.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Market System</div>
+          <div class="section-body">A market economy relies on individuals and private businesses to trade. People are driven by self-interest — making choices to benefit themselves. This system uses the price system to determine who gets goods based on who is willing and able to pay the market rate.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Market Economy</div><div class="term-def">A system where individuals and private businesses answer the three questions through trade and prices.</div></div>
+            <div class="term-card"><div class="term-name">Self-Interest</div><div class="term-def">The motivating force in a market — people making choices that benefit themselves.</div></div>
+            <div class="term-card"><div class="term-name">Price System</div><div class="term-def">The signal used to decide for whom to produce — goods go to those willing and able to pay.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. The Mixed Reality</div>
+          <div class="section-body">Most modern nations function as a mixed economy. This system allows for market freedom but includes government rules. It protects private property so individuals can own their own businesses, but the government also collects taxes to provide public services and safety regulations.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Mixed Economy</div><div class="term-def">A system that combines market freedom with some government rules and protections.</div></div>
+            <div class="term-card"><div class="term-name">Private Property</div><div class="term-def">The right of individuals, not the state, to own and control land, resources, and businesses.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U1 L5 -->
+      <div class="lesson-panel" id="unit1-panel-4">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How does a nation visualize its maximum output and the trade-offs of its choices?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">A nation uses a Production Possibilities Curve to map its total resource capacity and identify the exact opportunity cost of every economic decision.</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Limits of Power: The Frontier</div>
+          <div class="section-body">A nation possesses a finite amount of land, labor, and capital. When a country operates with efficiency, it sits exactly on its Production Possibilities Curve. This line represents the absolute edge of what is possible. If a nation is not using all its factories or workers, it falls inside the line — indicating a waste of potential power.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Production Possibilities Curve</div><div class="term-def">A graph showing the maximum combinations of two goods that can be produced using all available resources.</div></div>
+            <div class="term-card"><div class="term-name">Efficiency</div><div class="term-def">Using resources in the best way possible to maximize output without any waste.</div></div>
+            <div class="term-card"><div class="term-name">Finite</div><div class="term-def">Having a specific limit or end — resources are not infinite and will eventually run out.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. Growth and the Pivot</div>
+          <div class="section-body">When a nation invests in new technology or finds new resources, it experiences economic growth — the curve shifts outward. If a nation loses resources through war or disaster, it faces a contraction. A pivot is a movement along the fixed line where choosing more of one good creates an immediate opportunity cost.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Economic Growth</div><div class="term-def">An increase in a nation's ability to produce goods and services, shown by the curve shifting outward.</div></div>
+            <div class="term-card"><div class="term-name">Contraction</div><div class="term-def">A decrease in a nation's production capacity due to lost resources or technology, shown by the curve shifting inward.</div></div>
+            <div class="term-card"><div class="term-name">Opportunity Cost</div><div class="term-def">The most desirable alternative given up as the result of a decision.</div></div>
+          </div>
+        </div>
+
+        <div class="recap-box">
+          <div class="recap-label">Lesson Recap</div>
+          <ul>
+            <li>The curve shows the maximum a nation can produce.</li>
+            <li>Efficiency means you are touching the line — anything else is waste.</li>
+            <li>Trade-offs are mandatory because resources are finite.</li>
+          </ul>
+        </div>
+      </div>
+    </div><!-- /unit-body -->
+  </div><!-- /unit1 -->
+
+
+  <!-- ═══════════════════════════════════════════════
+       UNIT 2
+  ════════════════════════════════════════════════ -->
+  <div class="unit-block anim d5" id="unit2">
+    <div class="unit-header" onclick="toggleUnit('unit2')">
+      <span class="unit-icon">📈</span>
+      <div>
+        <div class="unit-label">Unit 2</div>
+        <div class="unit-name">Financial Markets</div>
+      </div>
+      <div class="unit-count">3 Lessons</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="unit-body">
+      <div class="tab-nav" id="tabs-unit2">
+        <button class="tab-btn active" onclick="switchTab('unit2',0)">L1 · The Launch</button>
+        <button class="tab-btn" onclick="switchTab('unit2',1)">L2 · Ticker Tape</button>
+        <button class="tab-btn" onclick="switchTab('unit2',2)">L4 · Market Movers</button>
+      </div>
+
+      <!-- U2 L1 -->
+      <div class="lesson-panel active" id="unit2-panel-0">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How do financial markets help businesses grow and create wealth?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Financial markets allow private owners to exchange company ownership for the massive capital required to transform a small operation into a global powerhouse.</div>
+        </div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Capital</strong> <span>· Capital</span></span>
+            <span class="lang-pill"><strong>Dividend</strong> <span>· Dividendo</span></span>
+            <span class="lang-pill"><strong>Public</strong> <span>· Público</span></span>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Watermelon Transition</div>
+          <div class="section-body">A business usually begins as a private company where a founder has total control but very little cash to expand. To grow, the owner transitions into a public company by selling pieces of the business on a stock exchange. This turns a small "grape" business into a massive "watermelon" — the founder owns a smaller slice of a much larger total value.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">The founder wins by becoming wealthy but loses the power to be the only boss. The shareholder wins by owning a piece of a successful brand but faces the risk of losing money if trading prices drop.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Private Company</div><div class="term-def">A business owned by an individual or small group that does not sell shares to the general public.</div></div>
+            <div class="term-card"><div class="term-name">Public Company</div><div class="term-def">A corporation whose ownership is distributed among general public shareholders through freely traded shares.</div></div>
+            <div class="term-card"><div class="term-name">Stock</div><div class="term-def">A type of security that signifies proportionate ownership in the issuing corporation.</div></div>
+            <div class="term-card"><div class="term-name">Shareholder</div><div class="term-def">Any person, company, or institution that owns at least one share of a company's stock.</div></div>
+            <div class="term-card"><div class="term-name">Capital</div><div class="term-def">The money or assets invested in a business to produce more wealth or increase production power.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Opening Bell</div>
+          <div class="section-body">The Initial Public Offering is the official birth certificate of a corporation — the first time a company offers its shares to the public. Once listed for trading, it creates a path for people to build wealth through capital gains. A successful company may also reward its owners by paying out a dividend from its profits.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Initial Public Offering (IPO)</div><div class="term-def">The first time a company sells its stock to the general public on the stock exchange.</div></div>
+            <div class="term-card"><div class="term-name">Stock Exchange</div><div class="term-def">A centralized location where shares of publicly traded companies are bought and sold.</div></div>
+            <div class="term-card"><div class="term-name">Dividend</div><div class="term-def">A portion of company profits paid out to shareholders as a reward for their investment.</div></div>
+            <div class="term-card"><div class="term-name">Capital Gains</div><div class="term-def">The profit made from selling an asset like a stock for more than its original purchase price.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U2 L2 -->
+      <div class="lesson-panel" id="unit2-panel-1">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How do investors use market data to track the value of a business?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Investors analyze specific data points like volume and price range to determine if a company's value is growing through a real trend or shifting due to temporary market noise.</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Riddle of the Ticker</div>
+          <div class="section-body">Every company is identified by a unique ticker symbol that serves as a shorthand code on the exchange. When the day begins, the open sets the starting line for trading. As the day ends, the close provides the final consensus on value used to calculate total wealth.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Ticker Symbol</div><div class="term-def">The 1–5 letter code used to identify a company on the exchange.</div></div>
+            <div class="term-card"><div class="term-name">Open</div><div class="term-def">The price of the stock when the market opens for the day.</div></div>
+            <div class="term-card"><div class="term-name">Close</div><div class="term-def">The price of the stock when the market closes for the day.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Strength of the Trend</div>
+          <div class="section-body">Investors use a stock table to track daily performance and find order in the chaos. To see if a price move is real, we look at volume to measure the intensity of the crowd. The net change provides the final verdict by showing the exact dollar amount the price moved since the previous day.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Volume</div><div class="term-def">The total number of shares traded during the day.</div></div>
+            <div class="term-card"><div class="term-name">Day Range</div><div class="term-def">The highest and lowest price a stock hit during the day.</div></div>
+            <div class="term-card"><div class="term-name">Net Change</div><div class="term-def">The dollar amount a stock has moved since the last close.</div></div>
+            <div class="term-card"><div class="term-name">Earnings</div><div class="term-def">The profit a company makes.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. The Mood of the Crowd</div>
+          <div class="section-body">The overall market sentiment determines the direction of the invisible hand based on the collective feeling of the crowd. A bull market is when prices are generally moving upward and investors feel greedy. A bear market is when prices are generally moving downward and the crowd becomes fearful.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Market Sentiment</div><div class="term-def">The feeling or mood of the investors toward a stock or the overall market.</div></div>
+            <div class="term-card"><div class="term-name">Bull Market</div><div class="term-def">A period where stock prices are generally moving upward.</div></div>
+            <div class="term-card"><div class="term-name">Bear Market</div><div class="term-def">A period where stock prices are generally moving downward.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U2 L4 -->
+      <div class="lesson-panel" id="unit2-panel-2">
+        <div class="lesson-eq">
+          <span class="eq-label">EQ</span>
+          <span class="eq-text">How do news and human emotion change the price of stocks?</span>
+        </div>
+        <div class="core-answer">
+          <div class="ca-label">Core Answer</div>
+          <div class="ca-text">Stock prices fluctuate when a news catalyst triggers human emotions like greed or fear, shifting the balance of supply and demand regardless of a company's actual value.</div>
+        </div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Catalyst</strong> <span>· Catalizador</span></span>
+            <span class="lang-pill"><strong>Speculation</strong> <span>· Especulación</span></span>
+            <span class="lang-pill"><strong>Market Sentiment</strong> <span>· Sentimiento del Mercado</span></span>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">I. The Mechanics of the Auction</div>
+          <div class="section-body">The stock market operates as a continuous auction. Prices are determined by supply and demand — the constant tug-of-war between shares available and people who want to own them. When market sentiment shifts toward optimism, demand spikes and prices climb. When the mood turns sour, sellers flood the market and prices collapse.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Supply and Demand</div><div class="term-def">The economic model that sets prices based on availability and desire.</div></div>
+            <div class="term-card"><div class="term-name">Market Sentiment</div><div class="term-def">The overall attitude or mood of investors toward a stock or the entire market.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">II. The Trigger and the Data</div>
+          <div class="section-body">Markets often sit in quiet equilibrium until a catalyst strikes — a sudden event that forces everyone to change their mind at the same time. The most common predictable triggers are earnings reports. If the data fails to meet expectations, the story of the stock breaks and investors rush to sell.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Catalyst</div><div class="term-def">An event or piece of news that triggers a sharp change in a stock's price.</div></div>
+            <div class="term-card"><div class="term-name">Earnings Reports</div><div class="term-def">An official document where a company reveals its profits and future plans.</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">III. Psychology and the Bubble</div>
+          <div class="section-body">Because of loss aversion, investors feel the pain of a loss twice as much as the joy of a gain, leading to panic selling. During periods of extreme greed, people engage in speculation by betting on a stock just because the price is going up. This creates a market bubble where prices inflate like a balloon — until it pops.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">In a bubble, the winners are those who sell while the crowd is still euphoric. The losers are average people who let their emotions guide their trades — buying at the top and selling at the bottom.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Loss Aversion</div><div class="term-def">The tendency to feel the pain of a loss twice as strongly as the joy of a gain.</div></div>
+            <div class="term-card"><div class="term-name">Speculation</div><div class="term-def">The act of buying an asset with the hope of a quick profit despite high risk.</div></div>
+            <div class="term-card"><div class="term-name">Market Bubble</div><div class="term-def">A situation where prices rise far above their real value until they pop and crash.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /unit2 -->
+
+
+  <!-- ═══════════════════════════════════════════════
+       UNIT 3
+  ════════════════════════════════════════════════ -->
+  <div class="unit-block anim d6" id="unit3">
+    <div class="unit-header" onclick="toggleUnit('unit3')">
+      <span class="unit-icon">⚖️</span>
+      <div>
+        <div class="unit-label">Unit 3</div>
+        <div class="unit-name">Supply, Demand and Markets</div>
+      </div>
+      <div class="unit-count">5 Lessons</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="unit-body">
+      <div class="tab-nav" id="tabs-unit3">
+        <button class="tab-btn active" onclick="switchTab('unit3',0)">L1 · Cost of Yes</button>
+        <button class="tab-btn" onclick="switchTab('unit3',1)">L2 · Cost of More</button>
+        <button class="tab-btn" onclick="switchTab('unit3',2)">L3 · Invisible Hand</button>
+        <button class="tab-btn" onclick="switchTab('unit3',3)">L4 · Market Shifters</button>
+        <button class="tab-btn" onclick="switchTab('unit3',4)">L5 · Visible Hand</button>
+      </div>
+
+      <!-- U3 L1 -->
+      <div class="lesson-panel active" id="unit3-panel-0">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">How does the law of demand explain our predictable response to rising prices?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">The law of demand holds true because rising prices force consumers to change their behavior to protect their limited purchasing power.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Demand</strong> <span>· Demanda</span></span>
+            <span class="lang-pill"><strong>Price</strong> <span>· Precio</span></span>
+            <span class="lang-pill"><strong>Quantity Demanded</strong> <span>· Cantidad Demandada</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. Market Behavior and Consumer Choice</div>
+          <div class="section-body">The law of demand creates a downward slope on the demand curve. As the price of a good rises, the quantity demanded falls. Consumers want to get the most value for their money. We use a demand schedule to track these changes.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Demand</div><div class="term-def">The desire, willingness, and ability to buy a good or service.</div></div>
+            <div class="term-card"><div class="term-name">Law of Demand</div><div class="term-def">As the price of a good rises, the quantity demanded drops.</div></div>
+            <div class="term-card"><div class="term-name">Quantity Demanded</div><div class="term-def">The specific amount of a good that consumers will buy at a specific price.</div></div>
+            <div class="term-card"><div class="term-name">Demand Schedule</div><div class="term-def">A table listing the quantity of a good a consumer will purchase at various prices.</div></div>
+            <div class="term-card"><div class="term-name">Demand Curve</div><div class="term-def">A graph showing the relationship between price and the quantity consumers will buy.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. The Two Engines of Demand</div>
+          <div class="section-body">The substitution effect happens when you swap an expensive item for a cheaper brand. The income effect happens when a price hike makes you feel poorer — you then buy less of everything because your money does not stretch as far.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Substitution Effect</div><div class="term-def">The tendency to replace an expensive item with a cheaper alternative — slides the curve up and to the left.</div></div>
+            <div class="term-card"><div class="term-name">Income Effect</div><div class="term-def">When a price hike makes a buyer feel poorer and reduces spending — slides the curve up and to the left.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U3 L2 -->
+      <div class="lesson-panel" id="unit3-panel-1">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">How does the law of supply explain how businesses respond to changing market prices?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Businesses increase total output when prices rise because the higher revenue makes it profitable to cover the rising marginal cost of production.</div></div>
+        <div class="section-block">
+          <div class="section-title">I. The Law of Supply</div>
+          <div class="section-body">The law of supply states that firms offer more of a good when its price increases. The producer sees a chance to earn more profit. They increase their total input to capture this extra revenue.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Law of Supply</div><div class="term-def">As price increases, the quantity supplied by producers also increases.</div></div>
+            <div class="term-card"><div class="term-name">Profit</div><div class="term-def">The total revenue of a firm minus its total costs.</div></div>
+            <div class="term-card"><div class="term-name">Total Input</div><div class="term-def">The combined amount of resources — labor, materials — used to create a good.</div></div>
+            <div class="term-card"><div class="term-name">Input Costs</div><div class="term-def">The expenses a firm pays for resources like labor and materials.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. The Law of Diminishing Marginal Returns</div>
+          <div class="section-body">There is a physical limit to growth. Adding more total input eventually yields smaller and smaller increases in total output. Think of a factory — one extra worker helps, but ten extra workers in a small space just bump into each other. Each extra worker produces fewer items than the last, causing marginal cost to increase.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Total Output</div><div class="term-def">The total quantity of finished goods produced by a firm.</div></div>
+            <div class="term-card"><div class="term-name">Marginal Cost</div><div class="term-def">The additional expense incurred from producing one extra unit of a product.</div></div>
+            <div class="term-card"><div class="term-name">Law of Diminishing Marginal Returns</div><div class="term-def">Adding more of one input eventually yields smaller increases in output.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. Profit Maximization</div>
+          <div class="section-body">A firm compares marginal revenue to marginal cost. A firm continues to produce as long as marginal revenue is higher than marginal cost. The firm stops at the exact point where these two values are equal — this is the profit maximization point.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Marginal Revenue</div><div class="term-def">The extra income a business receives from selling one more unit of a good.</div></div>
+            <div class="term-card"><div class="term-name">Profit Maximization</div><div class="term-def">The level of production where a firm earns the highest possible total profit.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U3 L3 -->
+      <div class="lesson-panel" id="unit3-panel-2">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">How do buyers and sellers use the price mechanism to reach equilibrium?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Buyers and sellers use price changes to signal their needs and balance the market without any outside control.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Equilibrium</strong> <span>· Equilibrio</span></span>
+            <span class="lang-pill"><strong>Surplus</strong> <span>· Excedente</span></span>
+            <span class="lang-pill"><strong>Shortage</strong> <span>· Escasez</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Hidden Order</div>
+          <div class="section-body">The invisible hand guides the market through the choices of individual people. Buyers and sellers work for their own gain — this behavior leads to a stable market for everyone. The price mechanism tells businesses when to produce more or less.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Invisible Hand</div><div class="term-def">Individuals pursuing self-interest unintentionally promote the general social good.</div></div>
+            <div class="term-card"><div class="term-name">Price Mechanism</div><div class="term-def">The system where price changes act as signals to buyers and sellers to adjust their behavior.</div></div>
+            <div class="term-card"><div class="term-name">Equilibrium</div><div class="term-def">The point where quantity supplied equals quantity demanded, resulting in a stable price.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. The Problems of the Market</div>
+          <div class="section-body">A shortage happens when the price is too low — consumers want more than producers provide. A surplus happens when the price is too high — producers create more than consumers want. The market tries to reach a market clearing price to fix these imbalances.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Surplus</div><div class="term-def">Quantity supplied is greater than quantity demanded at a given price.</div></div>
+            <div class="term-card"><div class="term-name">Shortage</div><div class="term-def">Quantity demanded is greater than quantity supplied at a given price.</div></div>
+            <div class="term-card"><div class="term-name">Disequilibrium</div><div class="term-def">Any price or quantity that is not at equilibrium, resulting in either a surplus or a shortage.</div></div>
+            <div class="term-card"><div class="term-name">Market Clearing Price</div><div class="term-def">The specific price at which quantity demanded matches quantity supplied.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U3 L4 -->
+      <div class="lesson-panel" id="unit3-panel-3">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">Why does a demand curve or supply curve shift left or right?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">A curve shifts left or right when a non-price condition changes the willingness of buyers or the ability of producers at every price level simultaneously, forcing the market to find a new equilibrium.</div></div>
+        <div class="section-block">
+          <div class="section-title">I. Movement Along a Curve vs. a Curve Shift</div>
+          <div class="section-body">When price changes, buyers respond by moving to a different point on the existing curve — this is a change in quantity demanded, not a shift. A curve shift happens when something other than price changes the entire relationship between price and quantity. Every point on the graph moves to a new position simultaneously.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Change in Quantity Demanded</div><div class="term-def">A movement along the existing demand curve caused exclusively by a change in the good's own price.</div></div>
+            <div class="term-card"><div class="term-name">Curve Shift</div><div class="term-def">A movement of the entire demand curve or supply curve to a new position.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. The Four Demand Shifters</div>
+          <div class="section-body">Four forces can shift the demand curve without any price change: tastes and preferences, consumer income, related goods (substitutes and complements), and consumer expectations about future prices.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Tastes and Preferences</div><div class="term-def">The shifting desires and cultural attitudes of consumers toward a product.</div></div>
+            <div class="term-card"><div class="term-name">Consumer Income</div><div class="term-def">The total earnings available to buyers that determine their purchasing power.</div></div>
+            <div class="term-card"><div class="term-name">Related Goods</div><div class="term-def">Products connected to another good either as substitutes or complements.</div></div>
+            <div class="term-card"><div class="term-name">Consumer Expectations</div><div class="term-def">Buyers' predictions about future prices or availability that alter current purchasing behavior.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. The Four Supply Shifters</div>
+          <div class="section-body">Four forces shift the supply curve: input costs, technology, the number of sellers in the market, and government policy through taxes or subsidies.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Input Costs</div><div class="term-def">The expenses producers pay for the resources needed to make a good.</div></div>
+            <div class="term-card"><div class="term-name">Technology</div><div class="term-def">Innovations that allow producers to create more output using the same or fewer resources.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">IV. Reading the Shift</div>
+          <div class="section-body">An increase in demand moves the curve right. A decrease moves it left. The same logic applies to supply. Right always means more quantity at every price. Left always means less. Every curve shift forces the market to find a new equilibrium.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Increase in Demand</div><div class="term-def">A rightward shift indicating buyers want more at every price level.</div></div>
+            <div class="term-card"><div class="term-name">Decrease in Demand</div><div class="term-def">A leftward shift indicating buyers want less at every price level.</div></div>
+            <div class="term-card"><div class="term-name">New Equilibrium</div><div class="term-def">The revised price and quantity outcome after a shift in the demand or supply curve.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U3 L5 -->
+      <div class="lesson-panel" id="unit3-panel-4">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">Can the government fix a price without breaking the market?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">When the government fixes a price, it protects one group in the short run but creates a permanent shortage or surplus that the market cannot fix on its own.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Price Control</strong> <span>· Control de Precios</span></span>
+            <span class="lang-pill"><strong>Price Ceiling</strong> <span>· Techo de Precios</span></span>
+            <span class="lang-pill"><strong>Price Floor</strong> <span>· Piso de Precios</span></span>
+            <span class="lang-pill"><strong>Black Market</strong> <span>· Mercado Negro</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Free Market Baseline</div>
+          <div class="section-body">A free market is self-correcting. When prices rise, producers supply more. When prices fall, consumers buy more. The market finds its own balance automatically. The price mechanism tells buyers and sellers when to move — no government office needed.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Price Mechanism</div><div class="term-def">The system where price changes act as signals to buyers and sellers to adjust their behavior.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. The Price Ceiling</div>
+          <div class="section-body">A price ceiling is a government-imposed maximum price a seller can legally charge. When landlords cannot raise rent to cover rising costs, they sell their buildings. The housing supply shrinks — a permanent shortage follows. The tenant already inside wins. The family searching for a new unit loses.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Price Ceiling</div><div class="term-def">A government-imposed maximum price that a seller is legally allowed to charge.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. The Price Floor</div>
+          <div class="section-body">A price floor is a government-imposed minimum price nobody can legally go below. California's minimum wage is a price floor on labor. When the floor sits above equilibrium, some employers cannot afford to hire everyone who wants a job — creating a surplus of labor. The price mechanism cannot fix it because the law says no.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Price Floor</div><div class="term-def">A government-imposed minimum price below which a good or service cannot legally be sold.</div></div>
+            <div class="term-card"><div class="term-name">Surplus</div><div class="term-def">Quantity supplied is greater than quantity demanded at a given price.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">IV. Permanent Disequilibrium and the Black Market</div>
+          <div class="section-body">When a law causes disequilibrium, the blockade is permanent — the price mechanism cannot restore equilibrium because the law will not allow it. So the market finds a workaround. A black market forms outside the legal price system.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Black Market</div><div class="term-def">An illegal or informal market that operates outside government-imposed price controls.</div></div>
+            <div class="term-card"><div class="term-name">Price Control</div><div class="term-def">A government-imposed rule that sets a legal maximum or minimum price for a good or service.</div></div>
+          </div>
+        </div>
+        <div class="recap-box">
+          <div class="recap-label">Lesson Recap</div>
+          <ul>
+            <li>A price ceiling creates a shortage.</li>
+            <li>A price floor creates a surplus.</li>
+            <li>The price mechanism cannot self-correct when the law blocks it.</li>
+            <li>Good intentions do not change market outcomes — price does.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div><!-- /unit3 -->
+
+
+  <!-- ═══════════════════════════════════════════════
+       UNIT 4
+  ════════════════════════════════════════════════ -->
+  <div class="unit-block anim d6" id="unit4">
+    <div class="unit-header" onclick="toggleUnit('unit4')">
+      <span class="unit-icon">📊</span>
+      <div>
+        <div class="unit-label">Unit 4</div>
+        <div class="unit-name">Macroeconomics</div>
+      </div>
+      <div class="unit-count">6 Lessons</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="unit-body">
+      <div class="tab-nav" id="tabs-unit4">
+        <button class="tab-btn active" onclick="switchTab('unit4',0)">L1 · GDP</button>
+        <button class="tab-btn" onclick="switchTab('unit4',1)">L2 · Business Cycle</button>
+        <button class="tab-btn" onclick="switchTab('unit4',2)">L3 · Inflation</button>
+        <button class="tab-btn" onclick="switchTab('unit4',3)">L4 · Fiscal Policy</button>
+        <button class="tab-btn" onclick="switchTab('unit4',4)">L5 · The Fed</button>
+        <button class="tab-btn" onclick="switchTab('unit4',5)">L6 · Global Trade</button>
+      </div>
+
+      <!-- U4 L1 -->
+      <div class="lesson-panel active" id="unit4-panel-0">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">What does GDP tell us, and not tell us, about a country's economy?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Gross domestic product measures the total value of what a country produces, but it leaves out unpaid work, informal labor, and the unequal distribution of wealth.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Macroeconomics</strong> <span>· Macroeconomía</span></span>
+            <span class="lang-pill"><strong>GDP</strong> <span>· Producto Interno Bruto</span></span>
+            <span class="lang-pill"><strong>Consumption</strong> <span>· Consumo</span></span>
+            <span class="lang-pill"><strong>Informal Economy</strong> <span>· Economía Informal</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. Measuring the Whole Economy</div>
+          <div class="section-body">Macroeconomics tracks whether things are getting better or worse for the whole country. Gross domestic product was built during the Great Depression because the government had no way to measure how bad things had gotten. Only finished goods count — no double counting.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Macroeconomics</div><div class="term-def">The study of the economy as a whole — including output, employment, and growth.</div></div>
+            <div class="term-card"><div class="term-name">Gross Domestic Product (GDP)</div><div class="term-def">GDP = C + I + G + (X − M). Total market value of all finished goods and services produced within a country in a given time period.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. How GDP Is Built</div>
+          <div class="section-body">GDP adds up four types of spending. Two-thirds of U.S. GDP comes from consumption — when families stop spending, the whole number drops.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Consumption (C)</div><div class="term-def">Household spending on goods and services — the largest single component of GDP.</div></div>
+            <div class="term-card"><div class="term-name">Investment (I)</div><div class="term-def">Business spending on capital goods like equipment and structures used to produce future output.</div></div>
+            <div class="term-card"><div class="term-name">Government Spending (G)</div><div class="term-def">Federal, state, and local expenditures on public goods and services.</div></div>
+            <div class="term-card"><div class="term-name">Net Exports (X − M)</div><div class="term-def">The value of a country's exports minus its imports — positive when a nation sells more than it buys abroad.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. Who the Scoreboard Misses</div>
+          <div class="section-body">GDP only counts work that gets reported. Cash-paid labor, street vending, and unpaid household work are invisible to GDP. The informal economy is estimated to be worth over one trillion dollars in the U.S. alone.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">GDP was designed to count formal market activity. Low-income communities do more informal work. Their labor makes the economy run but never raises the official number. The scoreboard was built with a blind spot.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Informal Economy</div><div class="term-def">Economic activity that is not tracked, taxed, or counted in official GDP — disproportionately common in low-income communities.</div></div>
+            <div class="term-card"><div class="term-name">Per Capita GDP</div><div class="term-def">Total GDP divided by total population — used to compare living standards but masks inequality in distribution.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U4 L2 -->
+      <div class="lesson-panel" id="unit4-panel-1">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">Why does the economy move in cycles?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">The business cycle is the economy's repeating pattern of growth and collapse — driven by GDP rising and falling in phases that no single person or government can stop.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Business Cycle</strong> <span>· Ciclo Económico</span></span>
+            <span class="lang-pill"><strong>Expansion</strong> <span>· Expansión</span></span>
+            <span class="lang-pill"><strong>Recession</strong> <span>· Recesión</span></span>
+            <span class="lang-pill"><strong>Recovery</strong> <span>· Recuperación</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Economy Moves in a Pattern</div>
+          <div class="section-body">GDP tracks the economy's motion — and that motion follows a repeating pattern called the business cycle. When GDP rises, the economy is in expansion. When GDP falls, the economy enters contraction. Every expansion reaches a peak — the highest point before the turn.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Business Cycle</div><div class="term-def">The recurring pattern of expansion and contraction in economic activity over time.</div></div>
+            <div class="term-card"><div class="term-name">Expansion</div><div class="term-def">The phase where GDP grows, employment rises, and consumer spending increases.</div></div>
+            <div class="term-card"><div class="term-name">Peak</div><div class="term-def">The highest point of an expansion before the economy begins to contract.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. When the Cycle Turns Downward</div>
+          <div class="section-body">A contraction means GDP is falling. A recession is official after two consecutive quarters of negative GDP. A depression is a severe collapse that lasts for years.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">The government cannot declare a recession until the damage is already done. By the time the label is official, working families have been inside the crisis for weeks.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Contraction</div><div class="term-def">The phase where GDP shrinks, businesses cut costs, and unemployment rises.</div></div>
+            <div class="term-card"><div class="term-name">Recession</div><div class="term-def">A decline in economic activity lasting at least two consecutive quarters of negative GDP.</div></div>
+            <div class="term-card"><div class="term-name">Depression</div><div class="term-def">A severe, prolonged collapse with double-digit unemployment lasting years.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. The Bottom and the Way Back Up</div>
+          <div class="section-body">The trough is the lowest point of the cycle — the moment the crash stops getting worse. Recovery feels like stabilization before it feels like growth.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Trough</div><div class="term-def">The lowest point of a contraction before recovery begins.</div></div>
+            <div class="term-card"><div class="term-name">Recovery</div><div class="term-def">The phase where economic activity begins to grow again after the trough.</div></div>
+            <div class="term-card"><div class="term-name">Leading Indicators</div><div class="term-def">Data points that shift before the overall economy changes — used to predict the next phase.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U4 L3 -->
+      <div class="lesson-panel" id="unit4-panel-2">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">What is the relationship between inflation and unemployment?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Inflation and unemployment pull against each other like a see-saw — when one goes down the other tends to rise, and the people with the least cushion absorb both ends.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Inflation</strong> <span>· Inflación</span></span>
+            <span class="lang-pill"><strong>Consumer Price Index</strong> <span>· Índice de Precios al Consumidor</span></span>
+            <span class="lang-pill"><strong>Purchasing Power</strong> <span>· Poder Adquisitivo</span></span>
+            <span class="lang-pill"><strong>Unemployment</strong> <span>· Desempleo</span></span>
+            <span class="lang-pill"><strong>Phillips Curve</strong> <span>· Curva de Phillips</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. What Inflation Actually Does to Your Money</div>
+          <div class="section-body">Prices rising across the whole economy — not just one store — shrinks what every dollar can buy. The government tracks this using the Consumer Price Index, which prices the same basket of goods over time. When the CPI goes up, purchasing power goes down.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Inflation</div><div class="term-def">A sustained rise in the general price level across the whole economy.</div></div>
+            <div class="term-card"><div class="term-name">Consumer Price Index (CPI)</div><div class="term-def">Government tool tracking a fixed basket of goods to measure inflation over time.</div></div>
+            <div class="term-card"><div class="term-name">Purchasing Power</div><div class="term-def">The real quantity of goods a dollar can buy — falls when inflation rises.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. Three Kinds of Unemployment</div>
+          <div class="section-body">Frictional unemployment is normal — workers between jobs. Structural unemployment is permanent — workers replaced by automation whose jobs do not come back when the economy recovers. Cyclical unemployment follows the business cycle — it spikes during contractions and eases during recovery.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Frictional Unemployment</div><div class="term-def">Short-term unemployment when workers are between jobs or entering the market.</div></div>
+            <div class="term-card"><div class="term-name">Structural Unemployment</div><div class="term-def">Long-term unemployment when workers' skills no longer match available jobs.</div></div>
+            <div class="term-card"><div class="term-name">Cyclical Unemployment</div><div class="term-def">Unemployment caused directly by a recession or contraction in the business cycle.</div></div>
+            <div class="term-card"><div class="term-name">Discouraged Workers</div><div class="term-def">Workers who stopped searching and are removed from the unemployment count entirely.</div></div>
+            <div class="term-card"><div class="term-name">Underemployed Workers</div><div class="term-def">Workers in part-time roles who need and want full-time hours.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. The See-Saw with No Clean Fix</div>
+          <div class="section-body">When unemployment is low, people spend more and prices rise — inflation increases. When unemployment is high, people spend less — inflation decreases. The Phillips Curve maps this directly. Fixing one tends to make the other worse.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">Low-income communities absorb the inflation when rates are low — and absorb the job losses when rates go up. Both ends of the see-saw land in the same neighborhoods.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Phillips Curve</div><div class="term-def">Economic model showing the trade-off between inflation and unemployment rates.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U4 L4 -->
+      <div class="lesson-panel" id="unit4-panel-3">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">What happens when the government intervenes in the market?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Fiscal policy is the government's use of taxing and spending to respond to the business cycle — but every intervention creates visible winners and hidden costs that land unevenly across households.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Fiscal Policy</strong> <span>· Política Fiscal</span></span>
+            <span class="lang-pill"><strong>Expansionary</strong> <span>· Expansionaria</span></span>
+            <span class="lang-pill"><strong>Contractionary</strong> <span>· Contractiva</span></span>
+            <span class="lang-pill"><strong>Multiplier Effect</strong> <span>· Efecto Multiplicador</span></span>
+            <span class="lang-pill"><strong>Progressive Tax</strong> <span>· Impuesto Progresivo</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Government Has Two Levers</div>
+          <div class="section-body">When the economy contracts, the government uses expansionary fiscal policy — more spending or lower taxes to push money back into circulation. When the economy overheats, it uses contractionary fiscal policy — less spending or higher taxes to slow rising prices.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Fiscal Policy</div><div class="term-def">Government use of taxing and spending to influence the direction of the economy.</div></div>
+            <div class="term-card"><div class="term-name">Expansionary Fiscal Policy</div><div class="term-def">Government action to stimulate a slowing economy by increasing spending or cutting taxes.</div></div>
+            <div class="term-card"><div class="term-name">Contractionary Fiscal Policy</div><div class="term-def">Government action to slow an overheating economy by cutting spending or raising taxes.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. One Dollar Does More Than One Dollar's Worth</div>
+          <div class="section-body">Government spending during a contraction does not stop at the first transaction — it keeps moving through the whole economy. One dollar of government spending becomes more than one dollar of economic activity. This is the multiplier effect.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Multiplier Effect</div><div class="term-def">Initial government spending generates a larger total increase in economic output.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. Same Rate, Different Burden</div>
+          <div class="section-body">A progressive tax charges higher earners a larger percentage — the federal income tax works this way. A regressive tax charges the same stated rate but takes a larger real share from lower earners — sales tax is the clearest example.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Progressive Tax</div><div class="term-def">Tax system where higher earners pay a larger percentage of their income.</div></div>
+            <div class="term-card"><div class="term-name">Regressive Tax</div><div class="term-def">Tax system where lower earners pay a higher share of income in practice.</div></div>
+            <div class="term-card"><div class="term-name">Budget Deficit</div><div class="term-def">Government spends more in a year than it collects in tax revenue.</div></div>
+            <div class="term-card"><div class="term-name">National Debt</div><div class="term-def">Total accumulated amount the federal government owes from deficit spending.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U4 L5 -->
+      <div class="lesson-panel" id="unit4-panel-4">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">What is the role of the Federal Reserve in managing the nation's economy?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">The Federal Reserve controls the cost of borrowing for every household and business in the country by adjusting the federal funds rate and the money supply — without a single vote.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Federal Reserve</strong> <span>· Reserva Federal</span></span>
+            <span class="lang-pill"><strong>Money Supply</strong> <span>· Oferta Monetaria</span></span>
+            <span class="lang-pill"><strong>Monetary Policy</strong> <span>· Política Monetaria</span></span>
+            <span class="lang-pill"><strong>Interest Rate</strong> <span>· Tasa de Interés</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Institution Behind the Lever</div>
+          <div class="section-body">The Federal Reserve was created in 1913 after repeated financial panics. Leaders serve 14-year terms — no president can remove the chair for an unpopular decision. Money decisions are supposed to follow economic data, not election cycles.</div>
+          <div class="power-box"><div class="pb-label">Power &amp; Reality</div><div class="pb-text">One unelected institution controls the cost of money for every household and business in America. The people most affected by its decisions have the least input into how those decisions are made.</div></div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Federal Reserve</div><div class="term-def">The central bank of the United States that controls monetary policy.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. One Number Moves Everything</div>
+          <div class="section-body">The federal funds rate is a single interest rate that drives every borrowing cost in the entire economy. When it moves, mortgage rates, car loans, and credit cards all move with it. The Fed never touches those loans directly — it does not need to.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Federal Funds Rate</div><div class="term-def">The benchmark interest rate the Fed sets that moves all other borrowing costs.</div></div>
+            <div class="term-card"><div class="term-name">Interest Rate</div><div class="term-def">The cost of borrowing money — transmitted from the Fed through banks to consumers.</div></div>
+            <div class="term-card"><div class="term-name">Money Supply</div><div class="term-def">The total amount of money circulating in the economy at any time.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. Two Directions, One Tool</div>
+          <div class="section-body">Expansionary monetary policy lowers the federal funds rate — cheaper borrowing restarts a slowing economy. Contractionary monetary policy raises the federal funds rate — more expensive borrowing cools inflation. The Fed targets 2% annual inflation as a sign of a healthy economy.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Monetary Policy</div><div class="term-def">The Fed's use of interest rates and money supply to stabilize the economy.</div></div>
+            <div class="term-card"><div class="term-name">Expansionary Monetary Policy</div><div class="term-def">The Fed lowers rates and increases money supply to stimulate growth.</div></div>
+            <div class="term-card"><div class="term-name">Contractionary Monetary Policy</div><div class="term-def">The Fed raises rates and reduces money supply to slow inflation.</div></div>
+            <div class="term-card"><div class="term-name">Inflation Target</div><div class="term-def">The Fed's goal of approximately 2% annual inflation as a sign of economic health.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- U4 L6 -->
+      <div class="lesson-panel" id="unit4-panel-5">
+        <div class="lesson-eq"><span class="eq-label">EQ</span><span class="eq-text">How does global trade work?</span></div>
+        <div class="core-answer"><div class="ca-label">Core Answer</div><div class="ca-text">Global trade works when nations specialize in what they produce best and cooperate through open exchange — it breaks down when one nation imposes a tariff and the other retaliates.</div></div>
+        <div class="lang-bridge">
+          <div class="lang-bridge-label">Key Vocabulary in Spanish</div>
+          <div class="lang-grid">
+            <span class="lang-pill"><strong>Globalization</strong> <span>· Globalización</span></span>
+            <span class="lang-pill"><strong>Tariff</strong> <span>· Tarifa</span></span>
+            <span class="lang-pill"><strong>Retaliation</strong> <span>· Represalia</span></span>
+            <span class="lang-pill"><strong>Interdependence</strong> <span>· Interdependencia</span></span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">I. The Connected World</div>
+          <div class="section-body">No modern economy produces everything it needs alone. Nations link through the buying and selling of goods, services, and labor across borders. That connection lowers prices and expands what every economy can produce. When one country's economy shifts, every connected country feels it within weeks.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Globalization</div><div class="term-def">The process linking national economies through trade, capital, and labor across borders.</div></div>
+            <div class="term-card"><div class="term-name">Comparative Advantage</div><div class="term-def">Producing a good at a lower opportunity cost than another country can.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">II. Why Nations Trade</div>
+          <div class="section-body">Countries trade because specialization makes everyone richer than isolation ever could. Each country produces what it does most efficiently. Trading for everything else lowers costs and raises total output.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">International Trade</div><div class="term-def">The exchange of goods and services across national borders.</div></div>
+            <div class="term-card"><div class="term-name">Interdependence</div><div class="term-def">When national economies rely on each other — disrupting that relationship costs both sides.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">III. The Border Tax</div>
+          <div class="section-body">A tariff is a government tax on imported goods that raises prices across the entire economy. The foreign company pays the tax at the border. That cost gets added to the price before the product reaches any store. The tariff moves through every connected supply chain.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Tariff</div><div class="term-def">A government tax placed on imported goods that raises their price.</div></div>
+            <div class="term-card"><div class="term-name">Trade Protection</div><div class="term-def">Government use of tariffs or barriers to shield domestic industries from foreign competition.</div></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-title">IV. The Retaliation Cycle</div>
+          <div class="section-body">When one country imposes a tariff the other side fires back — both economies absorb a cost neither one chose. Each retaliatory move creates protected industries that pressure governments to keep the tariffs in place. The cycle becomes self-reinforcing.</div>
+          <div class="terms-grid">
+            <div class="term-card"><div class="term-name">Retaliation</div><div class="term-def">A country responds to a tariff by imposing its own tariff on the other nation's exports.</div></div>
+            <div class="term-card"><div class="term-name">Trade War</div><div class="term-def">An escalating cycle of tariffs and retaliation between two or more countries.</div></div>
+          </div>
+        </div>
+        <div class="recap-box">
+          <div class="recap-label">Lesson Recap</div>
+          <ul>
+            <li>Globalization connects economies through specialization and open trade.</li>
+            <li>A tariff disrupts that system by raising prices across connected supply chains.</li>
+            <li>Retaliation turns a single tariff into a trade war — both sides absorb costs that cooperation would have prevented.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div><!-- /unit4 -->
+
+
+  <!-- TICKER -->
+  <div class="ticker-wrap anim d6">
+    <div class="ticker-inner">
+      <span>💎 Scarcity</span><span class="sym">·</span>
+      <span class="bull">▲ Opportunity Cost</span><span class="sym">·</span>
+      <span>📈 Supply and Demand</span><span class="sym">·</span>
+      <span class="bull">▲ Equilibrium</span><span class="sym">·</span>
+      <span>🏦 Federal Reserve</span><span class="sym">·</span>
+      <span class="bull">▲ GDP</span><span class="sym">·</span>
+      <span>📉 Inflation</span><span class="sym">·</span>
+      <span>🏛️ Fiscal Policy</span><span class="sym">·</span>
+      <span class="bull">▲ IPO</span><span class="sym">·</span>
+      <span>🌐 Tariff</span><span class="sym">·</span>
+      <span>🔁 Business Cycle</span><span class="sym">·</span>
+      <span class="bull">▲ Marginal Utility</span><span class="sym">·</span>
+      <span>💵 Market Economy</span><span class="sym">·</span>
+      <span class="bull">▲ Phillips Curve</span><span class="sym">·</span>
+      <span>💎 Scarcity</span><span class="sym">·</span>
+      <span class="bull">▲ Opportunity Cost</span><span class="sym">·</span>
+      <span>📈 Supply and Demand</span><span class="sym">·</span>
+      <span class="bull">▲ Equilibrium</span><span class="sym">·</span>
+      <span>🏦 Federal Reserve</span><span class="sym">·</span>
+      <span class="bull">▲ GDP</span><span class="sym">·</span>
+      <span>📉 Inflation</span><span class="sym">·</span>
+      <span>🏛️ Fiscal Policy</span><span class="sym">·</span>
+      <span class="bull">▲ IPO</span><span class="sym">·</span>
+      <span>🌐 Tariff</span><span class="sym">·</span>
+      <span>🔁 Business Cycle</span><span class="sym">·</span>
+      <span class="bull">▲ Marginal Utility</span><span class="sym">·</span>
+      <span>💵 Market Economy</span><span class="sym">·</span>
+      <span class="bull">▲ Phillips Curve</span>
+    </div>
+  </div>
+
+  <footer class="anim d6">
+    &copy; Mr. Rogers · Red 40 · CP Economics · Southeast San Diego
+  </footer>
+</div><!-- /wrap -->
+
+<script>
+function toggleUnit(id) {
+  var block = document.getElementById(id);
+  var isOpen = block.classList.contains('open');
+  // close all
+  document.querySelectorAll('.unit-block').forEach(function(b){ b.classList.remove('open'); });
+  if (!isOpen) block.classList.add('open');
+}
+
+function switchTab(unitId, index) {
+  var tabs = document.querySelectorAll('#tabs-' + unitId + ' .tab-btn');
+  var panels = document.querySelectorAll('#' + unitId + ' .lesson-panel');
+  tabs.forEach(function(t){ t.classList.remove('active'); });
+  panels.forEach(function(p){ p.classList.remove('active'); });
+  tabs[index].classList.add('active');
+  document.getElementById(unitId + '-panel-' + index).classList.add('active');
+}
+</script>
+</body>
+</html>

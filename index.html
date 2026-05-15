@@ -439,6 +439,10 @@ footer {
 .d7 { animation-delay: 0.7s; }
 .d8 { animation-delay: 0.8s; }
 
+.unit-card.featured {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 600px) {
   .units-grid { grid-template-columns: 1fr; }
   .main-title { font-size: 2.6rem; }
@@ -467,9 +471,25 @@ footer {
     <div class="line"></div>
   </div>
 
-  <div class="section-heading anim d5">Unit 4 Review Games</div>
+  <div class="section-heading anim d5">Final Exam Review</div>
 
   <div class="units-grid">
+
+    <!-- Review Guide -->
+    <a class="unit-card featured anim d5" href="review.html">
+      <div class="card-num"><span class="dot"></span> All Units</div>
+      <span class="card-icon">📘</span>
+      <div class="card-title">Economics Review Guide</div>
+      <div class="card-desc">All four units in one place. Open a unit, pick a lesson, and review terms and concepts one section at a time.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Unit 1</span>
+        <span class="topic-tag">Unit 2</span>
+        <span class="topic-tag">Unit 3</span>
+        <span class="topic-tag">Unit 4</span>
+      </div>
+      <div class="card-cta">Open Review Guide <span class="arrow">→</span></div>
+      <div class="card-watermark">★</div>
+    </a>
 
     <!-- U4 L1 -->
     <a class="unit-card anim d5" href="u4l1game.html">
